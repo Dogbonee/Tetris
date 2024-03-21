@@ -6,7 +6,7 @@
 
 Game::Game() : m_window{sf::VideoMode(System::WIDTH, System::HEIGHT), "Tetris"}, m_tickLength(1.f)
 {
-    SpawnPiece(O_BLOCK);
+    SpawnPiece(T_BLOCK);
 }
 
 void Game::Render()
@@ -73,6 +73,16 @@ void Game::SpawnPiece(PieceType type)
 
     m_pieces.emplace_back(type, m_board);
     p_currentPiece = &m_pieces.back();
+    int pieceSize = p_currentPiece->GetPieceArray().size();
+    for(int y = 0; y < pieceSize; y++)
+    {
+        for(int x = 0; x < pieceSize; x++)
+        {
+            m_board[y][5+x] = p_currentPiece->GetPieceArray()[y][x] * 2;
+
+        }
+    }
+    m_board.PrintBoard();
 }
 
 void Game::DrawPieces(sf::RenderWindow &window)
@@ -98,5 +108,6 @@ void Game::Tick()
 {
     //Check collision
     p_currentPiece->Fall();
+
 }
 

@@ -29,22 +29,40 @@ void Piece::generatePieceArray(int type)
                         {1,1}};
         break;
         case I_BLOCK:
-            m_piece = {{1,1,1,1}};
+            m_piece = {
+            {1,0,0,0},
+            {1,0,0,0},
+            {1,0,0,0},
+            {1,0,0,0}};
         break;
-        case 2:
-
+        case S_BLOCK:
+            m_piece = {
+            {0,0,0},
+            {0,1,1},
+            {1,1,0}};
             break;
-        case 3:
-
+        case Z_BLOCK:
+            m_piece = {
+            {0,0,0},
+            {1,1,0},
+            {0,1,1}};
+        case L_BLOCK:
+            m_piece = {
+            {0,0,0},
+            {1,0,0},
+            {1,1,1}};
             break;
-        case 4:
-
+        case J_BLOCK:
+            m_piece = {
+            {0,0,0},
+            {0,0,1},
+            {1,1,1}};
             break;
-        case 5:
-
-            break;
-        case 6:
-
+        case T_BLOCK:
+            m_piece = {
+            {0,0,0},
+            {0,1,0},
+            {1,1,1}};
             break;
 
         default:
@@ -61,19 +79,20 @@ void Piece::generatePieceVisual()
     {
         for(int x = 0; x < m_piece[0].size(); x++)
         {
-
-            sf::RectangleShape rect(sf::Vector2f(System::PIECE_SIZE, System::PIECE_SIZE));
-            rect.setPosition(System::WIDTH/2 + x * System::PIECE_SIZE, 100 - y * System::PIECE_SIZE);
-            rect.setOutlineColor(sf::Color::Black);
-            rect.setOutlineThickness(2);
-            switch(m_type)
+            if(m_piece[y][x])
             {
-                case O_BLOCK:
-                    rect.setFillColor(sf::Color::Yellow);
+                sf::RectangleShape rect(sf::Vector2f(System::PIECE_SIZE, System::PIECE_SIZE));
+                rect.setPosition(System::WIDTH/2 + x * System::PIECE_SIZE, 100 - (m_piece.size() - y) * System::PIECE_SIZE);
+                rect.setOutlineColor(sf::Color::Black);
+                rect.setOutlineThickness(2);
+                switch(m_type)
+                {
+                    case O_BLOCK:
+                        rect.setFillColor(sf::Color::Yellow);
                     break;
+                }
+                m_pieceVisual.push_back(rect);
             }
-            m_pieceVisual.push_back(rect);
-
         }
     }
 
@@ -101,4 +120,9 @@ void Piece::Fall()
     {
         piece.move(0, System::PIECE_SIZE);
     }
+}
+
+const PieceArray & Piece::GetPieceArray() const
+{
+    return m_piece;
 }

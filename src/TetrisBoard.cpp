@@ -30,15 +30,19 @@ TetrisBoard::TetrisBoard()
         m_board[i][11] = true;
         m_board[20][i/2 + 1] = true;
     }
+
+
+}
+
+void TetrisBoard::FallPiece()
+{
     for(int y = 0; y < m_board.size(); y++)
     {
         for(int x = 0; x < m_board[0].size(); x++)
         {
-            std::cout<<m_board[y][x] << " ";
+            //do stuff here
         }
-        std::cout<<std::endl;
     }
-
 }
 
 void TetrisBoard::draw(sf::RenderTarget &target, sf::RenderStates states) const
@@ -49,6 +53,23 @@ void TetrisBoard::draw(sf::RenderTarget &target, sf::RenderStates states) const
 const sf::Vector2f & TetrisBoard::getFramePos() const
 {
     return m_frame.getPosition();
+}
+
+void TetrisBoard::PrintBoard()
+{
+    for(int y = 0; y < m_board.size(); y++)
+    {
+        for(int x = 0; x < m_board[0].size(); x++)
+        {
+            printf("%d ", m_board[y][x]);
+        }
+        printf("\n");
+    }
+}
+
+array<uint8_t, 12>& TetrisBoard::operator[](size_t index)
+{
+    return m_board[index];
 }
 
 

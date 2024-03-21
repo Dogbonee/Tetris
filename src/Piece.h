@@ -27,10 +27,10 @@ enum MovementOption {
     MOVE_RIGHT = 1
 };
 
-
+typedef vector<vector<bool>> PieceArray;
 class Piece : public sf::Drawable{
 
-    vector<vector<bool>> m_piece;
+    PieceArray m_piece;
     vector<sf::RectangleShape> m_pieceVisual;
     TetrisBoard* p_Board;
     int m_type;
@@ -46,6 +46,7 @@ public:
     void Move(MovementOption direction);
     void Fall();
 
+    const PieceArray & GetPieceArray() const;
 };
 
 
