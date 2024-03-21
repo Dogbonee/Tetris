@@ -8,6 +8,8 @@
 
 #include "System.h"
 
+
+
 TetrisBoard::TetrisBoard()
 {
     m_frame.setSize(sf::Vector2f(250, 500));
@@ -34,16 +36,181 @@ TetrisBoard::TetrisBoard()
 
 }
 
+//TODO: change rotation algorithm to one with O(1) extra space
+void TetrisBoard::RotatePiece(RotationOption rotation)
+{
+    PrintBoard();
+    //Arbitrary numbers greater than m_board size
+    int minY = 50;
+    int minX = 50;
+    //Find bounds of piece (to make 3x3)
+    for(int y = 0; y < m_board.size(); y++)
+    {
+        for(int x = 0; x < m_board[0].size(); x++)
+        {
+            if(m_board[y][x] == 2)
+            {
+                if(x < minX) {minX = x;}
+                if(y < minY) {minY = y;}
+            }
+        }
+    }
+
+    uint8_t arr[3][3];
+    uint8_t rotatedArr[3][3];
+    for(int i = minY; i < minY + 3; i++)
+    {
+        for(int j = minX; j < minX + 3; j++)
+        {
+            arr[i-minY][j-minX] = m_board[i][j];
+        }
+    }
+
+    for(int i = 0; i < 3; i++)
+    {
+        for(int j = 0; j < 3; j++)
+        {
+            rotatedArr[2-i][j] = arr[2-j][2-i];
+        }
+    }
+
+    for(int i = minY; i < minY + 3; i++)
+    {
+        for(int j = minX; j < minX + 3; j++)
+        {
+            m_board[i][j] = rotatedArr[i-minY][j-minX];
+        }
+    }
+    PrintBoard();
+}
+
 void TetrisBoard::FallPiece()
 {
     for(int y = 0; y < m_board.size(); y++)
     {
         for(int x = 0; x < m_board[0].size(); x++)
         {
-            //do stuff here
+            //if board is not the piece, return
+            if(m_board[y][x] < 2) continue;
+            //if board is the piece and has not been affected (2), move the piece num down in the board and set it as affected (3)
+            if(m_board[y][x] == 2)
+            {
+                m_board[y+1][x] += 3;
+                m_board[y][x] = 0;
+            }
+            //if board is the piece and has been affected (3), set it to not affected (2) and continue.
+            //This prevents an infinite loop of m_board[y+1][x] always being moved down
+            if(m_board[y][x] == 3)
+            {
+                m_board[y][x] = 2;
+            }
+            //if board is the piece and has been affected and needs to move down again, increment the next one down
+            //and set it equal to not affected. This occurs when a piecenum that needs to move down moves onto another piecenum
+            if(m_board[y][x] == 5)
+            {
+                m_board[y+1][x] += 3;
+                m_board[y][x] = 2;
+            }
         }
     }
 }
+
+void TetrisBoard::MovePiece(MovementOption direction)
+{
+    for(int y = 0; y < m_board.size(); y++)
+    {
+        //The for loop has to run in the direction the piece is moving, otherwise affected piecenums (3) will not be set to two.
+        //This abonination of a for loop sets the directon of the for loop to run right->left if the direction is left,
+        //otherwise run left->right
+        for(int x = (m_board[0].size() - 1) * (direction == MOVE_LEFT); x != (m_board[0].size() - 1) * (direction == MOVE_RIGHT); x+=direction)
+        {
+            //if board is not the piece, return
+            if(m_board[y][x] < 2) continue;
+            //if board is the piece and has not been affected (2), move the piece num over in the board and set it as affected (3)
+            if(m_board[y][x] == 2)
+            {
+                m_board[y][x+direction] += 3;
+                m_board[y][x] = 0;
+            }
+            //if board is the piece and has been affected (3), set it to not affected (2) and continue.
+            //This prevents an infinite loop of m_board[y][x + dir] always being moved over
+            if(m_board[y][x] == 3)
+            {
+                m_board[y][x] = 2;
+            }
+            //if board is the piece and has been affected and needs to move down again, increment the next one over
+            //and set it equal to not affected. This occurs when a piecenum that needs to move over moves onto another piecenum
+            if(m_board[y][x] == 5)
+            {
+                m_board[y][x+direction] += 3;
+                m_board[y][x] = 2;
+            }
+
+        }
+    }
+}
+
+bool TetrisBoard::WillCollide(MovementOption direction)
+{
+    uint8_t movingDown = direction == 0;
+    std::vector<sf::Vector2i> pieceCoords;
+    for(int y = 0; y < m_board.size(); y++)
+    {
+        for(int x = 0; x < m_board[0].size(); x++)
+        {
+            if(m_board[y][x] == 2)
+            {
+                pieceCoords.emplace_back(x,y);
+            }
+        }
+    }
+    for(auto& coord : pieceCoords)
+    {
+        if(m_board[coord.y + movingDown][coord.x+direction] == 1)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void TetrisBoard::SetPiece()
+{
+    std::vector<sf::Vector2i> pieceCoords;
+    for(int y = 0; y < m_board.size(); y++)
+    {
+        for(int x = 0; x < m_board[0].size(); x++)
+        {
+            if(m_board[y][x] == 2)
+            {
+                m_board[y][x] = 1;
+            }
+        }
+    }
+
+}
+
+void TetrisBoard::CheckLines()
+{
+    std::vector<int> completedLines;
+    for(int y = 0; y < completedLines.size() - 1; y++)
+    {
+        bool lineComplete = true;
+        for(int x = 0; x < m_board[0].size(); x++)
+        {
+            if(m_board[m_board.size() - y][x] != 1)
+            {
+                lineComplete = false;
+            }
+        }
+        if(lineComplete)
+        {
+            completedLines.push_back(m_board.size() - y);
+        }
+    }
+}
+
 
 void TetrisBoard::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
@@ -65,6 +232,7 @@ void TetrisBoard::PrintBoard()
         }
         printf("\n");
     }
+    printf("\n\n");
 }
 
 array<uint8_t, 12>& TetrisBoard::operator[](size_t index)

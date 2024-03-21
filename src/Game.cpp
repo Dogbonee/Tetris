@@ -4,9 +4,10 @@
 
 #include "Game.h"
 
-Game::Game() : m_window{sf::VideoMode(System::WIDTH, System::HEIGHT), "Tetris"}, m_tickLength(1.f)
+Game::Game() : m_window{sf::VideoMode(System::WIDTH, System::HEIGHT), "Tetris"}, m_defaultTickLength(1.0f), m_speedTickLength(0.1f), m_tickLength(m_defaultTickLength)
 {
-    SpawnPiece(T_BLOCK);
+    std::srand(std::time(nullptr));
+    SpawnPiece(static_cast<PieceType>(std::rand() % 7));
 }
 
 void Game::Render()
@@ -40,16 +41,23 @@ void Game::HandleKeyboardInput(sf::Keyboard::Key keyCode)
     switch(keyCode)
     {
         case sf::Keyboard::Right:
-            if(p_currentPiece)
+            if(p_currentPiece && !m_board.WillCollide(MOVE_RIGHT))
             {
                 p_currentPiece->Move(MOVE_RIGHT);
+                m_board.MovePiece(MOVE_RIGHT);
             }
             break;
         case sf::Keyboard::Left:
-            if(p_currentPiece)
+            if(p_currentPiece && !m_board.WillCollide((MOVE_LEFT)))
             {
                 p_currentPiece->Move(MOVE_LEFT);
+                m_board.MovePiece(MOVE_LEFT);
             }
+            break;
+        case sf::Keyboard::Up:
+            p_currentPiece->Rotate(CLOCKWISE);
+            m_board.RotatePiece(CLOCKWISE);
+            break;
     }
 }
 
@@ -57,6 +65,8 @@ void Game::Update()
 {
     while(m_window.isOpen())
     {
+        //should handle in other function in future
+        m_tickLength = sf::Keyboard::isKeyPressed(sf::Keyboard::Down) ? m_speedTickLength : m_defaultTickLength;
         HandleEvents();
         ManageGameClock();
         Render();
@@ -82,7 +92,7 @@ void Game::SpawnPiece(PieceType type)
 
         }
     }
-    m_board.PrintBoard();
+
 }
 
 void Game::DrawPieces(sf::RenderWindow &window)
@@ -97,7 +107,8 @@ void Game::ManageGameClock()
 {
     static float tickTimeRemaining = m_tickLength;
     tickTimeRemaining -= m_clock.restart().asSeconds();
-    if(tickTimeRemaining <= 0)
+
+    if(tickTimeRemaining <= 0 || tickTimeRemaining > m_tickLength)
     {
         Tick();
         tickTimeRemaining = m_tickLength;
@@ -107,7 +118,16 @@ void Game::ManageGameClock()
 void Game::Tick()
 {
     //Check collision
-    p_currentPiece->Fall();
+    if(!m_board.WillCollide(MOVE_DOWN))
+    {
+        p_currentPiece->Fall();
+        m_board.FallPiece();
+    }else
+    {
+        m_board.SetPiece();
+        SpawnPiece(static_cast<PieceType>(std::rand() % 7));
+    }
+
 
 }
 

@@ -5,10 +5,13 @@
 #ifndef PIECE_H
 #define PIECE_H
 #include <vector>
+#include <SFML/Graphics.hpp>
+
 #include "TetrisBoard.h"
 
 using std::vector;
 
+class TetrisBoard;
 
 enum PieceType {
 
@@ -22,12 +25,9 @@ enum PieceType {
 
 };
 
-enum MovementOption {
-    MOVE_LEFT = -1,
-    MOVE_RIGHT = 1
-};
 
-typedef vector<vector<bool>> PieceArray;
+
+typedef vector<vector<uint8_t>> PieceArray;
 class Piece : public sf::Drawable{
 
     PieceArray m_piece;
@@ -45,6 +45,7 @@ public:
 
     void Move(MovementOption direction);
     void Fall();
+    void Rotate(RotationOption direction);
 
     const PieceArray & GetPieceArray() const;
 };

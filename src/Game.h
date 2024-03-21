@@ -9,7 +9,7 @@
 #include "Piece.h"
 #include "System.h"
 #include "TetrisBoard.h"
-
+#include <ctime>
 class Game {
 
 
@@ -18,6 +18,8 @@ class Game {
     sf::Event m_event;
     sf::Clock m_clock;
     float m_tickLength;
+    float m_defaultTickLength;
+    float m_speedTickLength;
 
     void Render();
     void HandleEvents();

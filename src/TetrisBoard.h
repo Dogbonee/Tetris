@@ -6,9 +6,18 @@
 #define TETRISBOARD_H
 #include <SFML/Graphics.hpp>
 #include <array>
-
 using std::array;
 
+enum MovementOption {
+    MOVE_LEFT = -1,
+    MOVE_DOWN = 0,
+    MOVE_RIGHT = 1
+};
+
+enum RotationOption {
+    CLOCKWISE = -1,
+    COUNTER_CLOCKWISE = 1
+};
 
 class TetrisBoard : public sf::Drawable{
 
@@ -16,9 +25,16 @@ class TetrisBoard : public sf::Drawable{
     array<array<uint8_t, 12>,21> m_board;
     sf::RectangleShape m_frame;
 
+
+
 public:
     TetrisBoard();
+    void RotatePiece(RotationOption rotation);
     void FallPiece();
+    void MovePiece(MovementOption direction);
+    bool WillCollide(MovementOption direction);
+    void SetPiece();
+    void CheckLines();
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
     const sf::Vector2f& getFramePos() const;
     void PrintBoard();
