@@ -10,7 +10,7 @@
 
 
 
-TetrisBoard::TetrisBoard()
+TetrisBoard::TetrisBoard() : m_piecePos(5,0)
 {
     m_frame.setSize(sf::Vector2f(250, 500));
     m_frame.setFillColor(sf::Color::Transparent);
@@ -39,30 +39,16 @@ TetrisBoard::TetrisBoard()
 //TODO: change rotation algorithm to one with O(1) extra space
 void TetrisBoard::RotatePiece(RotationOption rotation)
 {
-    //Arbitrary numbers greater than m_board size
-    int minY = 50;
-    int minX = 50;
-    //Find bounds of piece (to make 3x3)
-    for(int y = 0; y < m_board.size(); y++)
-    {
-        for(int x = 0; x < m_board[0].size(); x++)
-        {
-            if(m_board[y][x] == 2)
-            {
-                if(x < minX) {minX = x;}
-                if(y < minY) {minY = y;}
-            }
-        }
-    }
+    //So much better than last algorithm i.e actually works (most of the time) still has some bugs later in the game so we need to check that
     int arr[3][3];
     int rotatedArr[3][3];
-    for(int i = minY; i < minY + 3; i++)
+    for(int i = m_piecePos.y; i < m_piecePos.y + 3; i++)
     {
-        for(int j = minX; j < minX + 3; j++)
+        for(int j = m_piecePos.x; j < m_piecePos.x + 3; j++)
         {
             if(m_board[i][j] != 1)
             {
-                arr[i-minY][j-minX] = m_board[i][j];
+                arr[i-m_piecePos.y][j-m_piecePos.x] = m_board[i][j];
             }
         }
     }
@@ -71,27 +57,23 @@ void TetrisBoard::RotatePiece(RotationOption rotation)
     {
         for(int j = 0; j < 3; j++)
         {
-            std::cout<<arr[i][j]<<" ";
-            if(arr[i][j] > 5)
-            {
-                //invalid entry
-
-                exit(1);
-            }
             rotatedArr[2-i][j] = arr[2-j][2-i];
         }
-        std::cout<<"\n";
     }
-    std::cout<<"\n\n";
-    for(int i = minY; i < minY + 3; i++)
-    {
-        for(int j = minX; j < minX + 3; j++)
-        {
-            m_board[i][j] = rotatedArr[i-minY][j-minX];
 
+    for(int i = m_piecePos.y; i < m_piecePos.y + 3; i++)
+    {
+        for(int j = m_piecePos.x; j < m_piecePos.x + 3; j++)
+        {
+            m_board[i][j] = rotatedArr[i-m_piecePos.y][j-m_piecePos.x];
+            if(m_board[i][j] > 5)
+            {
+                std::cout<<"Game array has been corrupted\n";
+                exit(1);
+            }
         }
     }
-    MovePiece(MOVE_LEFT);
+
 }
 
 void TetrisBoard::FallPiece()
@@ -123,6 +105,7 @@ void TetrisBoard::FallPiece()
             }
         }
     }
+    m_piecePos.y++;
 }
 
 void TetrisBoard::MovePiece(MovementOption direction)
@@ -158,6 +141,7 @@ void TetrisBoard::MovePiece(MovementOption direction)
 
         }
     }
+    m_piecePos.x += direction;
 }
 
 bool TetrisBoard::WillCollide(MovementOption direction)
@@ -198,7 +182,7 @@ void TetrisBoard::SetPiece()
             }
         }
     }
-
+    m_piecePos = sf::Vector2i(5,0);
 }
 
 void TetrisBoard::CheckLines()
@@ -243,6 +227,11 @@ void TetrisBoard::PrintBoard()
         printf("\n");
     }
     printf("\n\n");
+}
+
+const sf::Vector2i & TetrisBoard::GetPiecePos() const
+{
+    return m_piecePos;
 }
 
 array<uint8_t, 12>& TetrisBoard::operator[](size_t index)

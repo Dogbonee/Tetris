@@ -4,6 +4,8 @@
 
 #include "Game.h"
 
+#include <iostream>
+
 Game::Game() : m_window{sf::VideoMode(System::WIDTH, System::HEIGHT), "Tetris"}, m_defaultTickLength(1.0f), m_speedTickLength(0.1f), m_tickLength(m_defaultTickLength)
 {
     std::srand(std::time(nullptr));
@@ -43,18 +45,24 @@ void Game::HandleKeyboardInput(sf::Keyboard::Key keyCode)
         case sf::Keyboard::Right:
             if(p_currentPiece && !m_board.WillCollide(MOVE_RIGHT))
             {
-                p_currentPiece->Move(MOVE_RIGHT);
-                m_board.MovePiece(MOVE_RIGHT);
+                MovePieceComponents(MOVE_RIGHT);
             }
             break;
         case sf::Keyboard::Left:
             if(p_currentPiece && !m_board.WillCollide((MOVE_LEFT)))
             {
-                p_currentPiece->Move(MOVE_LEFT);
-                m_board.MovePiece(MOVE_LEFT);
+                MovePieceComponents(MOVE_LEFT);
             }
             break;
         case sf::Keyboard::Up:
+            std::cout<<m_board.GetPiecePos().x<<std::endl;
+            if(m_board.GetPiecePos().x >= 9)
+            {
+                MovePieceComponents(MOVE_LEFT);
+            }else if (m_board.GetPiecePos().x <= 0)
+            {
+                MovePieceComponents(MOVE_RIGHT);
+            }
             p_currentPiece->Rotate(CLOCKWISE);
             m_board.RotatePiece(CLOCKWISE);
             break;
@@ -81,7 +89,7 @@ void Game::Run()
 void Game::SpawnPiece(PieceType type)
 {
 
-    m_pieces.emplace_back(type, m_board);
+    m_pieces.emplace_back(type);
     p_currentPiece = &m_pieces.back();
     int pieceSize = p_currentPiece->GetPieceArray().size();
     for(int y = 0; y < pieceSize; y++)
@@ -130,5 +138,11 @@ void Game::Tick()
     }
 
 
+}
+
+void Game::MovePieceComponents(MovementOption direction)
+{
+    p_currentPiece->Move(direction);
+    m_board.MovePiece(direction);
 }
 

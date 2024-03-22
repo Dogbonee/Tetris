@@ -24,7 +24,7 @@ class TetrisBoard : public sf::Drawable{
     //10x20 board, with room left over for border collisions
     array<array<uint8_t, 12>,21> m_board;
     sf::RectangleShape m_frame;
-
+    sf::Vector2i m_piecePos;
 
 
 public:
@@ -38,6 +38,8 @@ public:
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
     const sf::Vector2f& getFramePos() const;
     void PrintBoard();
+
+    const sf::Vector2i & GetPiecePos() const;
 
     array<uint8_t, 12>& operator [](size_t index);
 };

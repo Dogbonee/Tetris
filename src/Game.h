@@ -26,6 +26,7 @@ class Game {
     void HandleKeyboardInput(sf::Keyboard::Key keyCode);
     void Update();
 
+
 public:
     Game();
     void Run();
@@ -44,6 +45,7 @@ private:
     void DrawPieces(sf::RenderWindow& window);
     void ManageGameClock();
     void Tick();
+    void MovePieceComponents(MovementOption direction);
 };
 
 

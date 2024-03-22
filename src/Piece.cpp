@@ -10,7 +10,7 @@
 #include "System.h"
 
 
-Piece::Piece(int type, TetrisBoard &gameBoard) : p_Board(&gameBoard)
+Piece::Piece(int type)
 {
     m_type = type;
 
@@ -87,6 +87,10 @@ void Piece::generatePieceVisual()
                 sf::RectangleShape rect(sf::Vector2f(System::PIECE_SIZE, System::PIECE_SIZE));
                 //Since the origin is different for every piece, the position needs to be changed depending on the x/y values
                 rect.setPosition(System::X_OFFSET, System::Y_OFFSET);
+                if(m_type == I_BLOCK)
+                {
+                    rect.move(0, -System::PIECE_SIZE);
+                }
                 rect.setOrigin(System::PIECE_SIZE * (1-x) + (System::PIECE_SIZE/2), System::PIECE_SIZE * (1-y) + System::PIECE_SIZE/2);
                 if(m_piece.size() == 4){rect.move(0, System::PIECE_SIZE);}
                 rect.setOutlineColor(sf::Color::Black);

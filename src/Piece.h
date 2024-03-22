@@ -32,7 +32,6 @@ class Piece : public sf::Drawable{
 
     PieceArray m_piece;
     vector<sf::RectangleShape> m_pieceVisual;
-    TetrisBoard* p_Board;
     int m_type;
 
     void generatePieceArray(int type);
@@ -40,7 +39,7 @@ class Piece : public sf::Drawable{
 
 
 public:
-    Piece(int type, TetrisBoard& gameBoard);
+    Piece(int type);
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
     void Move(MovementOption direction);
