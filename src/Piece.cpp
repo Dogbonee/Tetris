@@ -86,7 +86,7 @@ void Piece::generatePieceVisual()
             {
                 sf::RectangleShape rect(sf::Vector2f(System::PIECE_SIZE, System::PIECE_SIZE));
                 //Since the origin is different for every piece, the position needs to be changed depending on the x/y values
-                rect.setPosition(System::WIDTH/2 + x * System::PIECE_SIZE - System::X_OFFSET, 100 - (m_piece.size() - y) * System::PIECE_SIZE + System::Y_OFFSET);
+                rect.setPosition(System::X_OFFSET, System::Y_OFFSET);
                 rect.setOrigin(System::PIECE_SIZE * (1-x) + (System::PIECE_SIZE/2), System::PIECE_SIZE * (1-y) + System::PIECE_SIZE/2);
                 if(m_piece.size() == 4){rect.move(0, System::PIECE_SIZE);}
                 rect.setOutlineColor(sf::Color::Black);

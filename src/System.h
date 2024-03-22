@@ -12,8 +12,8 @@ public:
     static constexpr int WIDTH = 800;
     static constexpr int HEIGHT = 600;
     static constexpr int PIECE_SIZE = 25;
-    static constexpr int X_OFFSET = 25;
-    static constexpr int Y_OFFSET = 25;
+    static constexpr int X_OFFSET = WIDTH/2 + 10;
+    static constexpr int Y_OFFSET = 85;
 };
 
 

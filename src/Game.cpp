@@ -125,6 +125,7 @@ void Game::Tick()
     }else
     {
         m_board.SetPiece();
+        m_board.PrintBoard();
         SpawnPiece(static_cast<PieceType>(std::rand() % 7));
     }
 

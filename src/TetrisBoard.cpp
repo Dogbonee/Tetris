@@ -39,7 +39,6 @@ TetrisBoard::TetrisBoard()
 //TODO: change rotation algorithm to one with O(1) extra space
 void TetrisBoard::RotatePiece(RotationOption rotation)
 {
-    PrintBoard();
     //Arbitrary numbers greater than m_board size
     int minY = 50;
     int minX = 50;
@@ -55,14 +54,16 @@ void TetrisBoard::RotatePiece(RotationOption rotation)
             }
         }
     }
-
-    uint8_t arr[3][3];
-    uint8_t rotatedArr[3][3];
+    int arr[3][3];
+    int rotatedArr[3][3];
     for(int i = minY; i < minY + 3; i++)
     {
         for(int j = minX; j < minX + 3; j++)
         {
-            arr[i-minY][j-minX] = m_board[i][j];
+            if(m_board[i][j] != 1)
+            {
+                arr[i-minY][j-minX] = m_board[i][j];
+            }
         }
     }
 
@@ -70,18 +71,27 @@ void TetrisBoard::RotatePiece(RotationOption rotation)
     {
         for(int j = 0; j < 3; j++)
         {
+            std::cout<<arr[i][j]<<" ";
+            if(arr[i][j] > 5)
+            {
+                //invalid entry
+
+                exit(1);
+            }
             rotatedArr[2-i][j] = arr[2-j][2-i];
         }
+        std::cout<<"\n";
     }
-
+    std::cout<<"\n\n";
     for(int i = minY; i < minY + 3; i++)
     {
         for(int j = minX; j < minX + 3; j++)
         {
             m_board[i][j] = rotatedArr[i-minY][j-minX];
+
         }
     }
-    PrintBoard();
+    MovePiece(MOVE_LEFT);
 }
 
 void TetrisBoard::FallPiece()
