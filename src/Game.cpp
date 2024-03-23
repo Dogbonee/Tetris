@@ -63,8 +63,7 @@ void Game::HandleKeyboardInput(sf::Keyboard::Key keyCode)
             {
                 MovePieceComponents(MOVE_RIGHT);
             }
-            p_currentPiece->Rotate(CLOCKWISE);
-            m_board.RotatePiece(CLOCKWISE);
+            RotatePieceComponents(CLOCKWISE);
             break;
     }
 }
@@ -133,7 +132,8 @@ void Game::Tick()
     }else
     {
         m_board.SetPiece();
-        m_board.PrintBoard();
+        HandleLineComponents();
+        //m_board.PrintBoard();
         SpawnPiece(static_cast<PieceType>(std::rand() % 7));
     }
 
@@ -144,5 +144,31 @@ void Game::MovePieceComponents(MovementOption direction)
 {
     p_currentPiece->Move(direction);
     m_board.MovePiece(direction);
+}
+
+void Game::RotatePieceComponents(RotationOption direction)
+{
+    p_currentPiece->RotateArray(direction);
+    p_currentPiece->RotateVisual(direction);
+    m_board.RotatePiece(direction);
+}
+
+void Game::HandleLineComponents()
+{
+    std::vector<int> completedLines = m_board.CheckLines();
+    for(auto lineNum : completedLines)
+    {
+        for(auto & piece : m_pieces)
+        {
+            for(int i = 0; i < 3; i++)
+            {
+                if(piece.GetLevel() + i == lineNum)
+                {
+
+                }
+            }
+        }
+    }
+
 }
 

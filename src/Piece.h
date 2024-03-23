@@ -33,6 +33,7 @@ class Piece : public sf::Drawable{
     PieceArray m_piece;
     vector<sf::RectangleShape> m_pieceVisual;
     int m_type;
+    int m_level;
 
     void generatePieceArray(int type);
     void generatePieceVisual();
@@ -44,9 +45,14 @@ public:
 
     void Move(MovementOption direction);
     void Fall();
-    void Rotate(RotationOption direction);
+    void RotateVisual(RotationOption direction);
+    void RotateArray(RotationOption direction);
 
     const PieceArray & GetPieceArray() const;
+    int GetLevel();
+    sf::Vector2f GetPieceRectPosition(int rect) const;
+    const vector<sf::RectangleShape>& GetPieceVisual() const;
+    void EraseVisualRect(int rect);
 };
 
 

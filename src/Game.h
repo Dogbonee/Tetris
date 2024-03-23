@@ -46,6 +46,8 @@ private:
     void ManageGameClock();
     void Tick();
     void MovePieceComponents(MovementOption direction);
+    void RotatePieceComponents(RotationOption direction);
+    void HandleLineComponents();
 };
 
 

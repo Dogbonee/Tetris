@@ -185,22 +185,64 @@ void TetrisBoard::SetPiece()
     m_piecePos = sf::Vector2i(5,0);
 }
 
-void TetrisBoard::CheckLines()
+std::vector<int> TetrisBoard::CheckLines()
 {
     std::vector<int> completedLines;
-    for(int y = 0; y < completedLines.size() - 1; y++)
+    for(int y = 0; y < m_board.size() - 1; y++)
     {
         bool lineComplete = true;
-        for(int x = 0; x < m_board[0].size(); x++)
+        for(int x = 1; x < m_board[0].size()-1; x++)
         {
-            if(m_board[m_board.size() - y][x] != 1)
+            if(m_board[y][x] != 1)
             {
                 lineComplete = false;
+
             }
         }
         if(lineComplete)
         {
-            completedLines.push_back(m_board.size() - y);
+            completedLines.push_back(y);
+        }
+    }
+    for(const auto line : completedLines)
+    {
+        ClearLine(line);
+    }
+    return completedLines;
+}
+
+void TetrisBoard::ClearLine(const int line)
+{
+    std::cout<<"Clearing line " <<line <<"\n";
+    for(int i = 1; i < m_board[0].size()-1; i++)
+    {
+        m_board[line][i] = 0;
+    }
+    for(int y = 0; y <= line; y++)
+    {
+        for(int x = 1; x < m_board[0].size()-1; x++)
+        {
+            //only affect collision pieces
+            if(m_board[y][x] < 1) continue;
+            //if board is the piece and has not been affected (2), move the piece num down in the board and set it as affected (3)
+            if(m_board[y][x] == 1)
+            {
+                m_board[y+1][x] += 3;
+                m_board[y][x] = 0;
+            }
+            //if board is the piece and has been affected (3), set it to not affected (2) and continue.
+            //This prevents an infinite loop of m_board[y+1][x] always being moved down
+            if(m_board[y][x] == 3)
+            {
+                m_board[y][x] = 1;
+            }
+            //if board is the piece and has been affected and needs to move down again, increment the next one down
+            //and set it equal to not affected. This occurs when a piecenum that needs to move down moves onto another piecenum
+            if(m_board[y][x] == 4)
+            {
+                m_board[y+1][x] += 3;
+                m_board[y][x] = 1;
+            }
         }
     }
 }

@@ -34,7 +34,8 @@ public:
     void MovePiece(MovementOption direction);
     bool WillCollide(MovementOption direction);
     void SetPiece();
-    void CheckLines();
+    std::vector<int> CheckLines();
+    void ClearLine(int line);
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
     const sf::Vector2f& getFramePos() const;
     void PrintBoard();

@@ -10,7 +10,7 @@
 #include "System.h"
 
 
-Piece::Piece(int type)
+Piece::Piece(int type) : m_level(0)
 {
     m_type = type;
 
@@ -126,13 +126,14 @@ void Piece::Move(MovementOption direction)
 
 void Piece::Fall()
 {
+    m_level++;
     for(auto& piece : m_pieceVisual)
     {
         piece.move(0, System::PIECE_SIZE);
     }
 }
 
-void Piece::Rotate(RotationOption direction)
+void Piece::RotateVisual(RotationOption direction)
 {
     //only works if the origin is correct
     for(auto& piece : m_pieceVisual)
@@ -142,7 +143,55 @@ void Piece::Rotate(RotationOption direction)
 
 }
 
+void Piece::RotateArray(RotationOption direction)
+{
+    PieceArray rotatedArr;
+    for(int i = 0; i < 3; i++)
+    {
+        for(int j = 0; j < 3; j++)
+        {
+            rotatedArr[2-i][j] = m_piece[2-j][2-i];
+        }
+    }
+    m_piece = rotatedArr;
+}
+
 const PieceArray & Piece::GetPieceArray() const
 {
     return m_piece;
+}
+
+int Piece::GetLevel()
+{
+    return m_level;
+}
+
+sf::Vector2f Piece::GetPieceRectPosition(int rect) const
+{
+    if(rect < m_pieceVisual.size())
+    {
+        //return m_pieceVisual[rect].getOrigin();
+        sf::Vector2f temp = m_pieceVisual[rect].getOrigin();
+        sf::Vector2f pos;
+        int rot = m_pieceVisual[rect].getRotation();
+        pos.x = cos(rot*temp.x) - sin(rot*temp.y);
+        pos.y = sin(rot*temp.x) + cos(rot*temp.y);
+        pos += m_pieceVisual[rect].getPosition();
+        return pos;
+
+    }
+    std::cout<<"Out of bounds rect position requested\n";
+    exit(1);
+}
+
+
+const vector<sf::RectangleShape> & Piece::GetPieceVisual() const
+{
+    return m_pieceVisual;
+}
+
+void Piece::EraseVisualRect(int rect)
+{
+    m_pieceVisual[rect].setFillColor(sf::Color::Red);
+   //m_pieceVisual.erase(m_pieceVisual.begin() + rect);
 }
