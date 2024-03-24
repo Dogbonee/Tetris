@@ -7,11 +7,14 @@
 #include <iostream>
 
 Game::Game() : m_window{sf::VideoMode(System::WIDTH, System::HEIGHT), "Tetris"}, m_board(&m_currentPiece),
-               m_currentPiece(O_BLOCK), m_defaultTickLength(1.0f),
+               m_ghostBoard(&m_ghostPiece),
+               m_currentPiece(O_BLOCK), m_ghostPiece(m_currentPiece), m_defaultTickLength(1.0f),
                m_speedTickLength(0.1f), m_tickLength(m_defaultTickLength)
 {
     std::srand(std::time(nullptr));
     SpawnPiece(static_cast<PieceType>(std::rand() % 7));
+    m_ghostPiece = m_currentPiece;
+    ManageGhostPiece();
 }
 
 void Game::Render()
@@ -19,6 +22,10 @@ void Game::Render()
     m_window.clear();
     m_window.draw(m_board);
     m_window.draw(m_currentPiece);
+    if(m_currentPiece.GetPosition() != m_ghostPiece.GetPosition())
+    {
+        m_window.draw(m_ghostPiece);
+    }
     //DrawPieces(m_window);
     m_window.display();
 }
@@ -134,6 +141,7 @@ bool Game::Tick()
     HandleLineComponents();
     //m_board.PrintBoard();
     SpawnPiece(static_cast<PieceType>(std::rand() % 7));
+    ManageGhostPiece();
     return false;
 }
 
@@ -141,6 +149,7 @@ void Game::MovePieceComponents(MovementOption direction)
 {
     m_currentPiece.Move(direction);
     m_board.MovePiece(direction);
+    ManageGhostPiece();
 }
 
 void Game::RotatePieceComponents(RotationOption direction)
@@ -148,8 +157,8 @@ void Game::RotatePieceComponents(RotationOption direction)
     if(m_currentType == O_BLOCK) return;
     if(m_board.RotatePiece(direction))
     {
-
         m_currentPiece.RotateVisual(direction);
+        ManageGhostPiece();
     }
 }
 
@@ -158,10 +167,31 @@ void Game::HandleLineComponents()
     std::vector<int> completedLines = m_board.CheckLines();
 }
 
+void Game::HandleGhostPiece()
+{
+    while(!m_ghostBoard.WillCollide(MOVE_DOWN))
+    {
+        m_ghostPiece.Fall();
+        m_ghostBoard.FallPiece();
+    }
+}
+
+void Game::ResetGhostPiece()
+{
+    m_ghostPiece = m_currentPiece;
+    m_ghostPiece.MakeTransparent();
+}
+
+void Game::ManageGhostPiece()
+{
+    m_ghostBoard = m_board;
+    ResetGhostPiece();
+    HandleGhostPiece();
+}
+
 void Game::DropPiece()
 {
     while(Tick());
-
 }
 
 void Game::GameOver()

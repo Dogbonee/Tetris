@@ -141,6 +141,16 @@ void Piece::RotateVisual(RotationOption direction)
 
 }
 
+void Piece::MakeTransparent()
+{
+    sf::Color transparentColor = m_pieceVisual[0].getFillColor();
+    transparentColor.a -= 100;
+    for(auto& piece : m_pieceVisual)
+    {
+        piece.setFillColor(transparentColor);
+    }
+}
+
 PieceType Piece::GetType()
 {
     return m_type;
@@ -157,22 +167,9 @@ int Piece::GetLevel()
     return m_level;
 }
 
-sf::Vector2f Piece::GetPieceRectPosition(int rect) const
+sf::Vector2f Piece::GetPosition() const
 {
-    if(rect < m_pieceVisual.size())
-    {
-        //return m_pieceVisual[rect].getOrigin();
-        sf::Vector2f temp = m_pieceVisual[rect].getOrigin();
-        sf::Vector2f pos;
-        int rot = m_pieceVisual[rect].getRotation();
-        pos.x = cos(rot*temp.x) - sin(rot*temp.y);
-        pos.y = sin(rot*temp.x) + cos(rot*temp.y);
-        pos += m_pieceVisual[rect].getPosition();
-        return pos;
-
-    }
-    std::cout<<"Out of bounds rect position requested\n";
-    exit(1);
+    return m_pieceVisual[0].getPosition();
 }
 
 

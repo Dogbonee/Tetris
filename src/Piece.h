@@ -47,11 +47,12 @@ public:
     void Move(MovementOption direction);
     void Fall();
     void RotateVisual(RotationOption direction);
+    void MakeTransparent();
 
     PieceType GetType();
     const PieceArray & GetPieceArray() const;
     int GetLevel();
-    sf::Vector2f GetPieceRectPosition(int rect) const;
+    sf::Vector2f GetPosition() const;
     const vector<sf::RectangleShape>& GetPieceVisual() const;
     void EraseVisualRect(int rect);
 };

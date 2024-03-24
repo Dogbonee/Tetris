@@ -51,9 +51,11 @@ public:
 
     const sf::Vector2f& getFramePos() const;
     const sf::Vector2i & GetPiecePos() const;
+    const array<array<uint8_t, 12>,21>& GetBoard()const;
     void SetCurrentPieceType(PieceType type);
 
     array<uint8_t, 12>& operator [](size_t index);
+    TetrisBoard& operator =(TetrisBoard board);
 };
 
 

@@ -36,8 +36,10 @@ public:
 private:
     //Game objects
     TetrisBoard m_board;
+    TetrisBoard m_ghostBoard;
 
     Piece m_currentPiece;
+    Piece m_ghostPiece;
     PieceType m_currentType;
 
 
@@ -50,6 +52,9 @@ private:
     void MovePieceComponents(MovementOption direction);
     void RotatePieceComponents(RotationOption direction);
     void HandleLineComponents();
+    void HandleGhostPiece();
+    void ResetGhostPiece();
+    void ManageGhostPiece();
     void DropPiece();
     void GameOver();
 };

@@ -358,6 +358,11 @@ const sf::Vector2i & TetrisBoard::GetPiecePos() const
     return m_piecePos;
 }
 
+const array<array<uint8_t, 12>, 21> & TetrisBoard::GetBoard() const
+{
+    return m_board;
+}
+
 void TetrisBoard::SetCurrentPieceType(PieceType type)
 {
     m_currentType = type;
@@ -366,6 +371,12 @@ void TetrisBoard::SetCurrentPieceType(PieceType type)
 array<uint8_t, 12>& TetrisBoard::operator[](size_t index)
 {
     return m_board[index];
+}
+
+TetrisBoard & TetrisBoard::operator=(TetrisBoard board)
+{
+    m_board = board.GetBoard();
+    return *this;
 }
 
 
