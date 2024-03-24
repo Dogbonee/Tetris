@@ -25,9 +25,13 @@ class TetrisBoard : public sf::Drawable{
     array<array<uint8_t, 12>,21> m_board;
     sf::RectangleShape m_frame;
     sf::Vector2i m_piecePos;
+    std::vector<sf::RectangleShape> m_vRect;
 
 
 public:
+
+    bool currentIsIBlock;
+
     TetrisBoard();
     void RotatePiece(RotationOption rotation);
     void FallPiece();

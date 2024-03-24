@@ -86,7 +86,7 @@ void Piece::generatePieceVisual()
             {
                 sf::RectangleShape rect(sf::Vector2f(System::PIECE_SIZE, System::PIECE_SIZE));
                 //Since the origin is different for every piece, the position needs to be changed depending on the x/y values
-                rect.setPosition(System::X_OFFSET, System::Y_OFFSET);
+                rect.setPosition(System::X_MIDDLE, System::Y_OFFSET);
                 if(m_type == I_BLOCK)
                 {
                     rect.move(0, -System::PIECE_SIZE);
@@ -143,18 +143,7 @@ void Piece::RotateVisual(RotationOption direction)
 
 }
 
-void Piece::RotateArray(RotationOption direction)
-{
-    PieceArray rotatedArr;
-    for(int i = 0; i < 3; i++)
-    {
-        for(int j = 0; j < 3; j++)
-        {
-            rotatedArr[2-i][j] = m_piece[2-j][2-i];
-        }
-    }
-    m_piece = rotatedArr;
-}
+
 
 const PieceArray & Piece::GetPieceArray() const
 {

@@ -46,7 +46,7 @@ public:
     void Move(MovementOption direction);
     void Fall();
     void RotateVisual(RotationOption direction);
-    void RotateArray(RotationOption direction);
+
 
     const PieceArray & GetPieceArray() const;
     int GetLevel();

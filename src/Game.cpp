@@ -6,7 +6,8 @@
 
 #include <iostream>
 
-Game::Game() : m_window{sf::VideoMode(System::WIDTH, System::HEIGHT), "Tetris"}, m_defaultTickLength(1.0f), m_speedTickLength(0.1f), m_tickLength(m_defaultTickLength)
+Game::Game() : m_window{sf::VideoMode(System::WIDTH, System::HEIGHT), "Tetris"}, m_defaultTickLength(1.0f),
+               m_speedTickLength(0.1f), m_currentPiece(NULL), m_tickLength(m_defaultTickLength)
 {
     std::srand(std::time(nullptr));
     SpawnPiece(static_cast<PieceType>(std::rand() % 7));
@@ -16,7 +17,8 @@ void Game::Render()
 {
     m_window.clear();
     m_window.draw(m_board);
-    DrawPieces(m_window);
+    m_window.draw(m_currentPiece);
+    //DrawPieces(m_window);
     m_window.display();
 }
 
@@ -43,13 +45,13 @@ void Game::HandleKeyboardInput(sf::Keyboard::Key keyCode)
     switch(keyCode)
     {
         case sf::Keyboard::Right:
-            if(p_currentPiece && !m_board.WillCollide(MOVE_RIGHT))
+            if(!m_board.WillCollide(MOVE_RIGHT))
             {
                 MovePieceComponents(MOVE_RIGHT);
             }
             break;
         case sf::Keyboard::Left:
-            if(p_currentPiece && !m_board.WillCollide((MOVE_LEFT)))
+            if(!m_board.WillCollide((MOVE_LEFT)))
             {
                 MovePieceComponents(MOVE_LEFT);
             }
@@ -87,28 +89,22 @@ void Game::Run()
 
 void Game::SpawnPiece(PieceType type)
 {
-
-    m_pieces.emplace_back(type);
-    p_currentPiece = &m_pieces.back();
-    int pieceSize = p_currentPiece->GetPieceArray().size();
+    Piece piece(type);
+    m_currentPiece = piece;
+    m_board.currentIsIBlock = type == I_BLOCK;
+    int pieceSize = m_currentPiece.GetPieceArray().size();
     for(int y = 0; y < pieceSize; y++)
     {
         for(int x = 0; x < pieceSize; x++)
         {
-            m_board[y][5+x] = p_currentPiece->GetPieceArray()[y][x] * 2;
+            m_board[y][5+x] = m_currentPiece.GetPieceArray()[y][x] * 2;
 
         }
     }
 
 }
 
-void Game::DrawPieces(sf::RenderWindow &window)
-{
-    for(auto& piece : m_pieces)
-    {
-        window.draw(piece);
-    }
-}
+
 
 void Game::ManageGameClock()
 {
@@ -127,7 +123,7 @@ void Game::Tick()
     //Check collision
     if(!m_board.WillCollide(MOVE_DOWN))
     {
-        p_currentPiece->Fall();
+        m_currentPiece.Fall();
         m_board.FallPiece();
     }else
     {
@@ -142,33 +138,18 @@ void Game::Tick()
 
 void Game::MovePieceComponents(MovementOption direction)
 {
-    p_currentPiece->Move(direction);
+    m_currentPiece.Move(direction);
     m_board.MovePiece(direction);
 }
 
 void Game::RotatePieceComponents(RotationOption direction)
 {
-    p_currentPiece->RotateArray(direction);
-    p_currentPiece->RotateVisual(direction);
+    m_currentPiece.RotateVisual(direction);
     m_board.RotatePiece(direction);
 }
 
 void Game::HandleLineComponents()
 {
     std::vector<int> completedLines = m_board.CheckLines();
-    for(auto lineNum : completedLines)
-    {
-        for(auto & piece : m_pieces)
-        {
-            for(int i = 0; i < 3; i++)
-            {
-                if(piece.GetLevel() + i == lineNum)
-                {
-
-                }
-            }
-        }
-    }
-
 }
 

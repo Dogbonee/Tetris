@@ -15,7 +15,7 @@ class Game {
 
 
     sf::RenderWindow m_window;
-    sf::Event m_event;
+    sf::Event m_event{};
     sf::Clock m_clock;
     float m_tickLength;
     float m_defaultTickLength;
@@ -35,14 +35,14 @@ public:
 private:
     //Game objects
     TetrisBoard m_board;
-    std::vector<Piece> m_pieces;
-    Piece* p_currentPiece;
+
+    Piece m_currentPiece;
 
 
 
     //Game functions
     void SpawnPiece(PieceType type);
-    void DrawPieces(sf::RenderWindow& window);
+
     void ManageGameClock();
     void Tick();
     void MovePieceComponents(MovementOption direction);
