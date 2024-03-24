@@ -179,10 +179,20 @@ void TetrisBoard::SetPiece()
             if(m_board[y][x] == 2)
             {
                 m_board[y][x] = 1;
+
+                sf::RectangleShape rect(sf::Vector2f(System::PIECE_SIZE, System::PIECE_SIZE));
+                rect.setPosition(System::PIECE_SIZE * x + System::X_OFFSET, System::PIECE_SIZE * (y-1) + System::Y_OFFSET - System::PIECE_SIZE/2);
+                rect.setOutlineColor(sf::Color::Black);
+                rect.setOutlineThickness(1);
+                m_vRect.push_back(rect);
+
+
             }
         }
     }
     m_piecePos = sf::Vector2i(5,0);
+
+
 }
 
 std::vector<int> TetrisBoard::CheckLines()
@@ -245,12 +255,35 @@ void TetrisBoard::ClearLine(const int line)
             }
         }
     }
+
+
+
+    for(int i = 0; i < m_vRect.size(); i++)
+    {
+        if(m_vRect[i].getPosition().y == (line - 1) * System::PIECE_SIZE + System::Y_OFFSET - System::PIECE_SIZE/2)
+        {
+            m_vRect.erase(m_vRect.begin() + i);
+            i--;
+        }
+    }
+    for(auto& rect : m_vRect)
+    {
+        if(rect.getPosition().y < (line - 1) * System::PIECE_SIZE + System::Y_OFFSET - System::PIECE_SIZE/2)
+        {
+            rect.move(0, System::PIECE_SIZE);
+        }
+    }
+
 }
 
 
 void TetrisBoard::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
     target.draw(m_frame, states);
+    for(auto& i : m_vRect)
+    {
+        target.draw(i);
+    }
 }
 
 const sf::Vector2f & TetrisBoard::getFramePos() const
