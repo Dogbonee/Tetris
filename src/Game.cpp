@@ -6,8 +6,9 @@
 
 #include <iostream>
 
-Game::Game() : m_window{sf::VideoMode(System::WIDTH, System::HEIGHT), "Tetris"}, m_board(&m_currentPiece), m_defaultTickLength(1.0f),
-               m_speedTickLength(0.1f), m_currentPiece(NULL), m_tickLength(m_defaultTickLength)
+Game::Game() : m_window{sf::VideoMode(System::WIDTH, System::HEIGHT), "Tetris"}, m_board(&m_currentPiece),
+               m_currentPiece(O_BLOCK), m_defaultTickLength(1.0f),
+               m_speedTickLength(0.1f), m_tickLength(m_defaultTickLength)
 {
     std::srand(std::time(nullptr));
     SpawnPiece(static_cast<PieceType>(std::rand() % 7));
@@ -59,6 +60,9 @@ void Game::HandleKeyboardInput(sf::Keyboard::Key keyCode)
         case sf::Keyboard::Up:
             RotatePieceComponents(CLOCKWISE);
             break;
+        case sf::Keyboard::Space:
+            DropPiece();
+            break;
     }
 }
 
@@ -90,6 +94,10 @@ void Game::SpawnPiece(PieceType type)
     {
         for(int x = 0; x < pieceSize; x++)
         {
+            if(m_board[y][5+x] == 1)
+            {
+                GameOver();
+            }
             m_board[y][5+x] = m_currentPiece.GetPieceArray()[y][x] * 2;
 
         }
@@ -111,22 +119,22 @@ void Game::ManageGameClock()
     }
 }
 
-void Game::Tick()
+bool Game::Tick()
 {
+    //Returns whether piece can tick again without colliding
     //Check collision
     if(!m_board.WillCollide(MOVE_DOWN))
     {
         m_currentPiece.Fall();
         m_board.FallPiece();
-    }else
-    {
-        m_board.SetPiece();
-        HandleLineComponents();
-        //m_board.PrintBoard();
-        SpawnPiece(static_cast<PieceType>(std::rand() % 7));
+        return true;
     }
 
-
+    m_board.SetPiece();
+    HandleLineComponents();
+    //m_board.PrintBoard();
+    SpawnPiece(static_cast<PieceType>(std::rand() % 7));
+    return false;
 }
 
 void Game::MovePieceComponents(MovementOption direction)
@@ -148,5 +156,17 @@ void Game::RotatePieceComponents(RotationOption direction)
 void Game::HandleLineComponents()
 {
     std::vector<int> completedLines = m_board.CheckLines();
+}
+
+void Game::DropPiece()
+{
+    while(Tick());
+
+}
+
+void Game::GameOver()
+{
+    std::cout<<"Game over!\n";
+    exit(0);
 }
 

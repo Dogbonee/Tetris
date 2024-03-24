@@ -27,6 +27,7 @@ class Game {
     void Update();
 
 
+
 public:
     Game();
     void Run();
@@ -45,10 +46,12 @@ private:
     void SpawnPiece(PieceType type);
 
     void ManageGameClock();
-    void Tick();
+    bool Tick();
     void MovePieceComponents(MovementOption direction);
     void RotatePieceComponents(RotationOption direction);
     void HandleLineComponents();
+    void DropPiece();
+    void GameOver();
 };
 
 

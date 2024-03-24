@@ -10,6 +10,7 @@ set(SOURCE_FILES src/main.cpp
         src/System.h
         src/Piece.cpp
         src/Piece.h
+        src/System.cpp
 )
 
 

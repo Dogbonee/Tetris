@@ -10,7 +10,7 @@
 #include "System.h"
 
 
-Piece::Piece(int type) : m_level(0)
+Piece::Piece(PieceType type) : m_level(0)
 {
     m_type = type;
 
@@ -98,12 +98,7 @@ void Piece::generatePieceVisual()
                 if(m_piece.size() == 4){rect.move(0, System::PIECE_SIZE);}
                 rect.setOutlineColor(sf::Color::Black);
                 rect.setOutlineThickness(1);
-                switch(m_type)
-                {
-                    case O_BLOCK:
-                        rect.setFillColor(sf::Color::Yellow);
-                    break;
-                }
+                rect.setFillColor(System::ColorPiece(m_type));
                 m_pieceVisual.push_back(rect);
             }
         }
@@ -146,6 +141,10 @@ void Piece::RotateVisual(RotationOption direction)
 
 }
 
+PieceType Piece::GetType()
+{
+    return m_type;
+}
 
 
 const PieceArray & Piece::GetPieceArray() const

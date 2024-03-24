@@ -232,6 +232,7 @@ void TetrisBoard::SetPiece()
                 rect.setPosition(System::PIECE_SIZE * x + System::X_OFFSET, System::PIECE_SIZE * (y-1) + System::Y_OFFSET - System::PIECE_SIZE/2);
                 rect.setOutlineColor(sf::Color::Black);
                 rect.setOutlineThickness(1);
+                rect.setFillColor(System::ColorPiece(p_currentPiece->GetType()));
                 m_vRect.push_back(rect);
 
 
