@@ -44,6 +44,7 @@ public:
     void MovePiece(MovementOption direction);
     bool WillCollide(MovementOption direction);
     void SetPiece();
+    void ResetPiece();
     std::vector<int> CheckLines();
     void ClearLine(int line);
     void PrintBoard();

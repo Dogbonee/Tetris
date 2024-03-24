@@ -239,9 +239,14 @@ void TetrisBoard::SetPiece()
             }
         }
     }
+    ResetPiece();
+
+
+}
+
+void TetrisBoard::ResetPiece()
+{
     m_piecePos = sf::Vector2i(5,0);
-
-
 }
 
 std::vector<int> TetrisBoard::CheckLines()

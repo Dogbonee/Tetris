@@ -39,9 +39,16 @@ private:
     TetrisBoard m_ghostBoard;
 
     Piece m_currentPiece;
+    Piece m_nextPiece;
+    Piece m_holdPiece;
     Piece m_ghostPiece;
     PieceType m_currentType;
 
+    sf::Vector2f m_nextPiecePosition;
+    sf::Vector2f m_holdPiecePosition;
+
+    bool m_hasHeld;
+    bool m_hasHeldThisTurn;
 
 
     //Game functions
@@ -55,6 +62,8 @@ private:
     void HandleGhostPiece();
     void ResetGhostPiece();
     void ManageGhostPiece();
+    void HandleNextPiece();
+    void HoldPiece();
     void DropPiece();
     void GameOver();
 };

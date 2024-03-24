@@ -41,6 +41,7 @@ class Piece : public sf::Drawable{
 
 
 public:
+
     Piece(PieceType type);
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
@@ -53,6 +54,7 @@ public:
     const PieceArray & GetPieceArray() const;
     int GetLevel();
     sf::Vector2f GetPosition() const;
+    void SetPosition(const sf::Vector2f& position);
     const vector<sf::RectangleShape>& GetPieceVisual() const;
     void EraseVisualRect(int rect);
 };

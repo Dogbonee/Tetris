@@ -6,14 +6,18 @@
 
 #include <iostream>
 
-Game::Game() : m_window{sf::VideoMode(System::WIDTH, System::HEIGHT), "Tetris", sf::Style::Close}, m_board(&m_currentPiece),
+Game::Game() : m_window{sf::VideoMode(System::WIDTH, System::HEIGHT), "Tetris", sf::Style::Close},
+               m_board(&m_currentPiece),
                m_ghostBoard(&m_ghostPiece),
-               m_currentPiece(O_BLOCK), m_ghostPiece(m_currentPiece), m_defaultTickLength(1.0f),
-               m_speedTickLength(0.1f), m_tickLength(m_defaultTickLength)
+               m_currentPiece(O_BLOCK), m_nextPiece(O_BLOCK), m_holdPiece(O_BLOCK), m_ghostPiece(m_currentPiece),
+               m_defaultTickLength(1.0f),
+               m_speedTickLength(0.1f), m_tickLength(m_defaultTickLength), m_nextPiecePosition(650,100), m_holdPiecePosition(650, 250), m_hasHeld(false), m_hasHeldThisTurn(false)
 {
     std::srand(std::time(nullptr));
+
     SpawnPiece(static_cast<PieceType>(std::rand() % 7));
     m_ghostPiece = m_currentPiece;
+    HandleNextPiece();
     ManageGhostPiece();
 }
 
@@ -22,9 +26,15 @@ void Game::Render()
     m_window.clear();
     m_window.draw(m_board);
     m_window.draw(m_currentPiece);
+    m_window.draw(m_nextPiece);
+
     if(m_currentPiece.GetPosition() != m_ghostPiece.GetPosition())
     {
         m_window.draw(m_ghostPiece);
+    }
+    if(m_hasHeld)
+    {
+        m_window.draw(m_holdPiece);
     }
     //DrawPieces(m_window);
     m_window.display();
@@ -69,6 +79,12 @@ void Game::HandleKeyboardInput(sf::Keyboard::Key keyCode)
             break;
         case sf::Keyboard::Space:
             DropPiece();
+            break;
+        case sf::Keyboard::C:
+            if(!m_hasHeldThisTurn)
+            {
+                HoldPiece();
+            }
             break;
     }
 }
@@ -140,8 +156,10 @@ bool Game::Tick()
     m_board.SetPiece();
     HandleLineComponents();
     //m_board.PrintBoard();
-    SpawnPiece(static_cast<PieceType>(std::rand() % 7));
+    SpawnPiece(m_nextPiece.GetType());
+    HandleNextPiece();
     ManageGhostPiece();
+    m_hasHeldThisTurn = false;
     return false;
 }
 
@@ -187,6 +205,39 @@ void Game::ManageGhostPiece()
     m_ghostBoard = m_board;
     ResetGhostPiece();
     HandleGhostPiece();
+}
+
+void Game::HandleNextPiece()
+{
+    m_nextPiece = {static_cast<PieceType>(std::rand() % 7)};
+    m_nextPiece.SetPosition(m_nextPiecePosition);
+}
+
+void Game::HoldPiece()
+{
+
+    //clear currentpiece from board
+    for(int y = 0; y < 21; y++)
+    {
+        for(int x = 0; x < 12; x++)
+        {
+            if(m_board[y][x] == 2)
+            {
+                m_board[y][x] = 0;
+
+            }
+        }
+    }
+
+    PieceType currentType = m_currentType;
+    SpawnPiece(m_hasHeld ? m_holdPiece.GetType() : m_nextPiece.GetType());
+    m_holdPiece = {currentType};
+    m_holdPiece.SetPosition(m_holdPiecePosition);
+    m_board.ResetPiece();
+    m_ghostBoard.ResetPiece();
+    ManageGhostPiece();
+    m_hasHeld = true;
+    m_hasHeldThisTurn = true;
 }
 
 void Game::DropPiece()
