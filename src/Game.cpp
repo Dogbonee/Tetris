@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-Game::Game() : m_window{sf::VideoMode(System::WIDTH, System::HEIGHT), "Tetris"}, m_defaultTickLength(1.0f),
+Game::Game() : m_window{sf::VideoMode(System::WIDTH, System::HEIGHT), "Tetris"}, m_board(&m_currentPiece), m_defaultTickLength(1.0f),
                m_speedTickLength(0.1f), m_currentPiece(NULL), m_tickLength(m_defaultTickLength)
 {
     std::srand(std::time(nullptr));
@@ -57,14 +57,6 @@ void Game::HandleKeyboardInput(sf::Keyboard::Key keyCode)
             }
             break;
         case sf::Keyboard::Up:
-            std::cout<<m_board.GetPiecePos().x<<std::endl;
-            if(m_board.GetPiecePos().x >= 9)
-            {
-                MovePieceComponents(MOVE_LEFT);
-            }else if (m_board.GetPiecePos().x <= 0)
-            {
-                MovePieceComponents(MOVE_RIGHT);
-            }
             RotatePieceComponents(CLOCKWISE);
             break;
     }
@@ -91,7 +83,8 @@ void Game::SpawnPiece(PieceType type)
 {
     Piece piece(type);
     m_currentPiece = piece;
-    m_board.currentIsIBlock = type == I_BLOCK;
+    m_currentType = type;
+    m_board.SetCurrentPieceType(type);
     int pieceSize = m_currentPiece.GetPieceArray().size();
     for(int y = 0; y < pieceSize; y++)
     {
@@ -144,8 +137,12 @@ void Game::MovePieceComponents(MovementOption direction)
 
 void Game::RotatePieceComponents(RotationOption direction)
 {
-    m_currentPiece.RotateVisual(direction);
-    m_board.RotatePiece(direction);
+    if(m_currentType == O_BLOCK) return;
+    if(m_board.RotatePiece(direction))
+    {
+
+        m_currentPiece.RotateVisual(direction);
+    }
 }
 
 void Game::HandleLineComponents()

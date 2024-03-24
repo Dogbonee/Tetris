@@ -10,7 +10,7 @@
 
 
 
-TetrisBoard::TetrisBoard() : m_piecePos(5,0)
+TetrisBoard::TetrisBoard(Piece* pCurrentPiece) : m_piecePos(5,0), p_currentPiece(pCurrentPiece)
 {
     m_frame.setSize(sf::Vector2f(250, 500));
     m_frame.setFillColor(sf::Color::Transparent);
@@ -37,43 +37,91 @@ TetrisBoard::TetrisBoard() : m_piecePos(5,0)
 }
 
 //TODO: change rotation algorithm to one with O(1) extra space
-void TetrisBoard::RotatePiece(RotationOption rotation)
+bool TetrisBoard::RotatePiece(RotationOption rotation)
 {
     //So much better than last algorithm i.e actually works (most of the time) still has some bugs later in the game so we need to check that
-    int arr[3][3];
-    int rotatedArr[3][3];
-    for(int i = m_piecePos.y; i < m_piecePos.y + 3; i++)
+    if(m_currentType == O_BLOCK)return false;
+
+    int n = 3 + (m_currentType == I_BLOCK);
+
+    int arr[4][4];
+    int rotatedArr[4][4];
+
+    if(m_currentType == I_BLOCK && m_piecePos.x > 7) return false;
+    for(int i = m_piecePos.y; i < m_piecePos.y + n; i++)
     {
-        for(int j = m_piecePos.x; j < m_piecePos.x + 3; j++)
+        for(int j = m_piecePos.x; j < m_piecePos.x + n; j++)
         {
-            if(m_board[i][j] != 1)
+            try
             {
-                arr[i-m_piecePos.y][j-m_piecePos.x] = m_board[i][j];
+                arr[i-m_piecePos.y][j-m_piecePos.x] = m_board[i].at(j) != 1 ? m_board[i][j] : 0;
+            }catch(std::out_of_range& e)
+            {
+                return false;
             }
         }
     }
 
-    for(int i = 0; i < 3; i++)
+    bool RotationWillCollideRight = false;
+    bool RotationWillCollideLeft = false;
+    for(int i = 0; i < n; i++)
     {
-        for(int j = 0; j < 3; j++)
+        for(int j = 0; j < n; j++)
         {
-            rotatedArr[2-i][j] = arr[2-j][2-i];
+            rotatedArr[n-1-i][j] = arr[n-1-j][n-1-i];
+
+            //Should not call Willcollide for every element in array
+            if(rotatedArr[i][2] == 0 && WillCollide(MOVE_RIGHT))
+            {
+                RotationWillCollideRight = true;
+            }
+            if(rotatedArr[i][0] == 0 && WillCollide(MOVE_LEFT))
+            {
+                RotationWillCollideLeft = true;
+            }
+
         }
     }
 
-    for(int i = m_piecePos.y; i < m_piecePos.y + 3; i++)
+
+    //This code causes problems but it needs to be implemented eventually because rotation blocking plays very bad
+    /*
+    if(p_currentPiece != nullptr)
     {
-        for(int j = m_piecePos.x; j < m_piecePos.x + 3; j++)
+        if(RotationWillCollideRight && !WillCollide(MOVE_LEFT))
         {
+            p_currentPiece->Move(MOVE_LEFT);
+            MovePiece(MOVE_LEFT);
+        }
+        if(RotationWillCollideLeft && !WillCollide(MOVE_RIGHT))
+        {
+            p_currentPiece->Move(MOVE_RIGHT);
+            MovePiece(MOVE_RIGHT);
+        }
+        if(RotationWillCollideLeft && RotationWillCollideRight)
+        {
+            return false;
+        }
+    }else
+    {
+        std::cout<<"invalid pointer\n";
+        exit(1);
+    }
+    */
+    if(RotationWillCollideLeft || RotationWillCollideRight)
+    {
+        return false;
+    }
+    for(int i = m_piecePos.y; i < m_piecePos.y + n; i++)
+    {
+        for(int j = m_piecePos.x; j < m_piecePos.x + n; j++)
+        {
+
             m_board[i][j] = rotatedArr[i-m_piecePos.y][j-m_piecePos.x];
-            if(m_board[i][j] > 5)
-            {
-                std::cout<<"Game array has been corrupted\n";
-                exit(1);
-            }
         }
     }
 
+    return true;
 }
 
 void TetrisBoard::FallPiece()
@@ -307,6 +355,11 @@ void TetrisBoard::PrintBoard()
 const sf::Vector2i & TetrisBoard::GetPiecePos() const
 {
     return m_piecePos;
+}
+
+void TetrisBoard::SetCurrentPieceType(PieceType type)
+{
+    m_currentType = type;
 }
 
 array<uint8_t, 12>& TetrisBoard::operator[](size_t index)

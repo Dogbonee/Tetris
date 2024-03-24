@@ -37,6 +37,7 @@ private:
     TetrisBoard m_board;
 
     Piece m_currentPiece;
+    PieceType m_currentType;
 
 
 

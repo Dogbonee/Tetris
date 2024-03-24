@@ -7,11 +7,12 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 
-#include "TetrisBoard.h"
+
 
 using std::vector;
 
-class TetrisBoard;
+enum RotationOption : int;
+enum MovementOption : int;
 
 enum PieceType {
 
