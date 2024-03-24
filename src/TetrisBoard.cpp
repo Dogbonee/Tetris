@@ -12,7 +12,7 @@
 
 TetrisBoard::TetrisBoard(Piece* pCurrentPiece) : m_piecePos(5,0), p_currentPiece(pCurrentPiece)
 {
-    m_frame.setSize(sf::Vector2f(250, 500));
+    m_frame.setSize(sf::Vector2f(252, 500));
     m_frame.setFillColor(sf::Color::Transparent);
     m_frame.setOutlineColor(sf::Color::Red);
     m_frame.setOutlineThickness(30);

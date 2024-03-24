@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-Game::Game() : m_window{sf::VideoMode(System::WIDTH, System::HEIGHT), "Tetris"}, m_board(&m_currentPiece),
+Game::Game() : m_window{sf::VideoMode(System::WIDTH, System::HEIGHT), "Tetris", sf::Style::Close}, m_board(&m_currentPiece),
                m_ghostBoard(&m_ghostPiece),
                m_currentPiece(O_BLOCK), m_ghostPiece(m_currentPiece), m_defaultTickLength(1.0f),
                m_speedTickLength(0.1f), m_tickLength(m_defaultTickLength)
