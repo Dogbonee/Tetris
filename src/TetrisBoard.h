@@ -7,7 +7,10 @@
 #include <SFML/Graphics.hpp>
 #include <array>
 
+#include "Piece.h"
+
 enum PieceType : int;
+class Piece;
 using std::array;
 
 enum MovementOption {
@@ -29,13 +32,14 @@ class TetrisBoard : public sf::Drawable{
     sf::Vector2i m_piecePos;
     std::vector<sf::RectangleShape> m_vRect;
     PieceType m_currentType;
+    Piece* p_currentPiece;
 
 public:
 
 
 
-    TetrisBoard();
-    void RotatePiece(RotationOption rotation);
+    TetrisBoard(Piece* pCurrentPiece);
+    bool RotatePiece(RotationOption rotation);
     void FallPiece();
     void MovePiece(MovementOption direction);
     bool WillCollide(MovementOption direction);
