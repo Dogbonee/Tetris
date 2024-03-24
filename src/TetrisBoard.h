@@ -6,6 +6,8 @@
 #define TETRISBOARD_H
 #include <SFML/Graphics.hpp>
 #include <array>
+
+enum PieceType : int;
 using std::array;
 
 enum MovementOption {
@@ -26,11 +28,11 @@ class TetrisBoard : public sf::Drawable{
     sf::RectangleShape m_frame;
     sf::Vector2i m_piecePos;
     std::vector<sf::RectangleShape> m_vRect;
-
+    PieceType m_currentType;
 
 public:
 
-    bool currentIsIBlock;
+
 
     TetrisBoard();
     void RotatePiece(RotationOption rotation);
@@ -40,11 +42,12 @@ public:
     void SetPiece();
     std::vector<int> CheckLines();
     void ClearLine(int line);
-    void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-    const sf::Vector2f& getFramePos() const;
     void PrintBoard();
+    void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
+    const sf::Vector2f& getFramePos() const;
     const sf::Vector2i & GetPiecePos() const;
+    void SetCurrentPieceType(PieceType type);
 
     array<uint8_t, 12>& operator [](size_t index);
 };

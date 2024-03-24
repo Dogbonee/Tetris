@@ -309,6 +309,11 @@ const sf::Vector2i & TetrisBoard::GetPiecePos() const
     return m_piecePos;
 }
 
+void TetrisBoard::SetCurrentPieceType(PieceType type)
+{
+    m_currentType = type;
+}
+
 array<uint8_t, 12>& TetrisBoard::operator[](size_t index)
 {
     return m_board[index];

@@ -91,7 +91,7 @@ void Game::SpawnPiece(PieceType type)
 {
     Piece piece(type);
     m_currentPiece = piece;
-    m_board.currentIsIBlock = type == I_BLOCK;
+    m_board.SetCurrentPieceType(type);
     int pieceSize = m_currentPiece.GetPieceArray().size();
     for(int y = 0; y < pieceSize; y++)
     {
