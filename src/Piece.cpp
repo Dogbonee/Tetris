@@ -172,6 +172,14 @@ sf::Vector2f Piece::GetPosition() const
     return m_pieceVisual[0].getPosition();
 }
 
+void Piece::SetPosition(const sf::Vector2f &position)
+{
+    for(auto& rect : m_pieceVisual)
+    {
+        rect.setPosition(position);
+    }
+}
+
 
 const vector<sf::RectangleShape> & Piece::GetPieceVisual() const
 {
