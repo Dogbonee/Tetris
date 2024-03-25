@@ -14,7 +14,7 @@ using std::vector;
 enum RotationOption : int;
 enum MovementOption : int;
 
-enum PieceType {
+enum PieceType : int{
 
     O_BLOCK = 0,
     I_BLOCK,

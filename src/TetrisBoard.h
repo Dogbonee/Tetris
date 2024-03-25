@@ -10,16 +10,17 @@
 #include "Piece.h"
 
 enum PieceType : int;
+
 class Piece;
 using std::array;
 
-enum MovementOption {
+enum MovementOption : int{
     MOVE_LEFT = -1,
     MOVE_DOWN = 0,
     MOVE_RIGHT = 1
 };
 
-enum RotationOption {
+enum RotationOption : int{
     CLOCKWISE = -1,
     COUNTER_CLOCKWISE = 1
 };
