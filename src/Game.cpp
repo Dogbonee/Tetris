@@ -290,6 +290,10 @@ void Game::HandleNextPiece()
 {
     m_nextPiece = {static_cast<PieceType>(std::rand() % 7)};
     m_nextPiece.SetPosition(m_nextPiecePosition);
+    if(m_nextPiece.GetType() == I_BLOCK || m_nextPiece.GetType() == O_BLOCK)
+    {
+        m_nextPiece.SetPosition(sf::Vector2f(m_nextPiecePosition.x, m_nextPiecePosition.y + System::PIECE_SIZE));
+    }
 }
 
 void Game::HoldPiece()
@@ -312,6 +316,10 @@ void Game::HoldPiece()
     SpawnPiece(m_hasHeld ? m_holdPiece.GetType() : m_nextPiece.GetType());
     m_holdPiece = {currentType};
     m_holdPiece.SetPosition(m_holdPiecePosition);
+    if(m_holdPiece.GetType() == I_BLOCK || m_nextPiece.GetType() == O_BLOCK)
+    {
+        m_holdPiece.SetPosition(sf::Vector2f(m_nextPiecePosition.x, m_nextPiecePosition.y + System::PIECE_SIZE));
+    }
     m_board.ResetPiece();
     m_ghostBoard.ResetPiece();
     ManageGhostPiece();
