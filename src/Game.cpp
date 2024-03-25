@@ -14,6 +14,30 @@ Game::Game() : m_window{sf::VideoMode(System::WIDTH, System::HEIGHT), "Tetris", 
                m_speedTickLength(m_defaultTickLength/10), m_tickLength(m_defaultTickLength), m_nextPiecePosition(650,100), m_holdPiecePosition(650, 250),
                 m_hasHeld(false), m_hasHeldThisTurn(false), m_score(0)
 {
+
+
+    if(!m_textFont.loadFromFile("../res/Pixeboy.ttf"))
+    {
+        std::cout<<"Font could not be loaded!\n";
+    }
+
+    m_scoreLabel.setFont(m_textFont);
+    m_scoreLabel.setCharacterSize(60);
+    m_scoreLabel.setPosition(50,100);
+    m_scoreLabel.setString("Score");
+    m_nextLabel.setFont(m_textFont);
+    m_nextLabel.setCharacterSize(40);
+    m_nextLabel.setPosition(605,20);
+    m_nextLabel.setString("Next");
+    m_holdLabel.setFont(m_textFont);
+    m_holdLabel.setCharacterSize(40);
+    m_holdLabel.setPosition(605,170);
+    m_holdLabel.setString("Hold");
+    m_scoreText.setFont(m_textFont);
+    m_scoreText.setCharacterSize(40);
+    setScore();
+
+    //Init all ui before this point
     std::srand(std::time(nullptr));
     SpawnPiece(static_cast<PieceType>(std::rand() % 7));
     m_ghostPiece = m_currentPiece;
@@ -27,6 +51,10 @@ void Game::Render()
     m_window.draw(m_board);
     m_window.draw(m_currentPiece);
     m_window.draw(m_nextPiece);
+    m_window.draw(m_scoreLabel);
+    m_window.draw(m_scoreText);
+    m_window.draw(m_holdLabel);
+    m_window.draw(m_nextLabel);
 
     if(m_currentPiece.GetPosition() != m_ghostPiece.GetPosition())
     {
@@ -104,6 +132,14 @@ void Game::Update()
 void Game::Run()
 {
     Update();
+}
+
+void Game::setScore()
+{
+    m_scoreText.setString(std::to_string(m_score));
+    sf::FloatRect textRect = m_scoreText.getLocalBounds();
+    m_scoreText.setOrigin(textRect.left + textRect.width/2, textRect.top + textRect.height/2);
+    m_scoreText.setPosition(120,200);
 }
 
 void Game::SpawnPiece(PieceType type)
@@ -225,6 +261,7 @@ void Game::HandleScoring()
     }
     m_speedTickLength = m_defaultTickLength / 10;
     std::cout<<"Score: "<<m_score << " Tick length: " << m_defaultTickLength << '\n';
+    setScore();
 }
 
 void Game::HandleGhostPiece()

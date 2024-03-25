@@ -52,6 +52,15 @@ private:
 
     unsigned long m_score;
 
+    //UI
+    sf::Text m_scoreText;
+    sf::Text m_scoreLabel;
+    sf::Text m_nextLabel;
+    sf::Text m_holdLabel;
+    sf::Font m_textFont;
+
+    void setScore();
+
 
 
 
