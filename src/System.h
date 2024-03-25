@@ -16,6 +16,12 @@ public:
     static constexpr int X_OFFSET = X_MIDDLE - PIECE_SIZE * 6 - PIECE_SIZE/2;
     static constexpr int Y_OFFSET = 85;
 
+    static constexpr float m_levelOneTick = 1.f;
+    static constexpr float m_levelTwoTick = 0.75f;
+    static constexpr float m_levelThreeTick = 0.5f;
+    static constexpr float m_levelFourTick = 0.3f;
+    static constexpr float m_levelFiveTick = 0.15f;
+    static constexpr float m_levelSixTick = 0.05f;
 
     static sf::Color ColorPiece(PieceType type);
 };

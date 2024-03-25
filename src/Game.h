@@ -50,6 +50,10 @@ private:
     bool m_hasHeld;
     bool m_hasHeldThisTurn;
 
+    unsigned long m_score;
+
+
+
 
     //Game functions
     void SpawnPiece(PieceType type);
@@ -58,7 +62,7 @@ private:
     bool Tick();
     void MovePieceComponents(MovementOption direction);
     void RotatePieceComponents(RotationOption direction);
-    void HandleLineComponents();
+    void HandleScoring();
     void HandleGhostPiece();
     void ResetGhostPiece();
     void ManageGhostPiece();

@@ -10,11 +10,11 @@ Game::Game() : m_window{sf::VideoMode(System::WIDTH, System::HEIGHT), "Tetris", 
                m_board(&m_currentPiece),
                m_ghostBoard(&m_ghostPiece),
                m_currentPiece(O_BLOCK), m_nextPiece(O_BLOCK), m_holdPiece(O_BLOCK), m_ghostPiece(m_currentPiece),
-               m_defaultTickLength(1.0f),
-               m_speedTickLength(0.1f), m_tickLength(m_defaultTickLength), m_nextPiecePosition(650,100), m_holdPiecePosition(650, 250), m_hasHeld(false), m_hasHeldThisTurn(false)
+               m_defaultTickLength(System::m_levelOneTick),
+               m_speedTickLength(m_defaultTickLength/10), m_tickLength(m_defaultTickLength), m_nextPiecePosition(650,100), m_holdPiecePosition(650, 250),
+                m_hasHeld(false), m_hasHeldThisTurn(false), m_score(0)
 {
     std::srand(std::time(nullptr));
-
     SpawnPiece(static_cast<PieceType>(std::rand() % 7));
     m_ghostPiece = m_currentPiece;
     HandleNextPiece();
@@ -154,12 +154,13 @@ bool Game::Tick()
     }
 
     m_board.SetPiece();
-    HandleLineComponents();
+    HandleScoring();
     //m_board.PrintBoard();
     SpawnPiece(m_nextPiece.GetType());
     HandleNextPiece();
     ManageGhostPiece();
     m_hasHeldThisTurn = false;
+
     return false;
 }
 
@@ -180,9 +181,50 @@ void Game::RotatePieceComponents(RotationOption direction)
     }
 }
 
-void Game::HandleLineComponents()
+void Game::HandleScoring()
 {
     std::vector<int> completedLines = m_board.CheckLines();
+    if(completedLines.size() == 0)return;
+    int earnedScore = 0;
+    switch(completedLines.size())
+    {
+        case 1:
+            earnedScore = 100;
+            break;
+        case 2:
+            earnedScore = 300;
+            break;
+        case 3:
+            earnedScore = 600;
+            break;
+        case 4:
+            earnedScore = 1000;
+            break;
+    }
+    m_score += earnedScore;
+
+    if(m_score > 4000)
+    {
+        m_defaultTickLength =System::m_levelTwoTick;
+    }
+    if(m_score > 12000)
+    {
+        m_defaultTickLength =System::m_levelThreeTick;
+    }
+    if(m_score > 24000)
+    {
+        m_defaultTickLength =System::m_levelFourTick;
+    }
+    if(m_score > 40000)
+    {
+        m_defaultTickLength =System::m_levelFiveTick;
+    }
+    if(m_score > 60000)
+    {
+        m_defaultTickLength =System::m_levelSixTick;
+    }
+    m_speedTickLength = m_defaultTickLength / 10;
+    std::cout<<"Score: "<<m_score << " Tick length: " << m_defaultTickLength << '\n';
 }
 
 void Game::HandleGhostPiece()
