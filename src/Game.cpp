@@ -318,7 +318,7 @@ void Game::HoldPiece()
     m_holdPiece.SetPosition(m_holdPiecePosition);
     if(m_holdPiece.GetType() == I_BLOCK || m_nextPiece.GetType() == O_BLOCK)
     {
-        m_holdPiece.SetPosition(sf::Vector2f(m_nextPiecePosition.x, m_nextPiecePosition.y + System::PIECE_SIZE));
+        m_holdPiece.SetPosition(sf::Vector2f(m_holdPiecePosition.x, m_holdPiecePosition.y + System::PIECE_SIZE));
     }
     m_board.ResetPiece();
     m_ghostBoard.ResetPiece();
