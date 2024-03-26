@@ -300,7 +300,7 @@ void Game::HoldPiece()
     SpawnPiece(m_hasHeld ? m_holdPiece.GetType() : m_nextPiece.GetType());
     m_holdPiece = {currentType};
     m_holdPiece.SetPosition(m_holdPiecePosition);
-    if(m_holdPiece.GetType() == I_BLOCK || m_nextPiece.GetType() == O_BLOCK)
+    if(m_holdPiece.GetType() == I_BLOCK || m_holdPiece.GetType() == O_BLOCK)
     {
         m_holdPiece.SetPosition(sf::Vector2f(m_holdPiecePosition.x, m_holdPiecePosition.y + System::PIECE_SIZE));
     }
