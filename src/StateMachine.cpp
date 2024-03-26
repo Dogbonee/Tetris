@@ -13,6 +13,7 @@ StateMachine::StateMachine() :m_window {sf::VideoMode(System::WIDTH, System::HEI
 {
     std::cout<<"Starting state machine\n";
 
+
     //
 }
 
@@ -38,8 +39,10 @@ void StateMachine::UpdateState()
 void StateMachine::Run()
 {
     std::cout<<"Game setup successful. Running...\n";
+    m_window.setVerticalSyncEnabled(true);
     while(m_window.isOpen())
     {
+
         UpdateState();
     }
 }

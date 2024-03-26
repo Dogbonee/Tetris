@@ -46,7 +46,9 @@ bool TetrisBoard::RotatePiece(RotationOption rotation)
 
     int arr[4][4];
     int rotatedArr[4][4];
+    int xorArr [4][4];
 
+    //Hack to avoid sigsegv when rotating i piece at border
     if(m_currentType == I_BLOCK && m_piecePos.x > 7) return false;
     for(int i = m_piecePos.y; i < m_piecePos.y + n; i++)
     {
@@ -54,6 +56,7 @@ bool TetrisBoard::RotatePiece(RotationOption rotation)
         {
             try
             {
+                //Try to populate array with m_board
                 arr[i-m_piecePos.y][j-m_piecePos.x] = m_board[i].at(j) != 1 ? m_board[i][j] : 0;
             }catch(std::out_of_range& e)
             {
@@ -62,61 +65,30 @@ bool TetrisBoard::RotatePiece(RotationOption rotation)
         }
     }
 
-    bool RotationWillCollideRight = false;
-    bool RotationWillCollideLeft = false;
+
     for(int i = 0; i < n; i++)
     {
         for(int j = 0; j < n; j++)
         {
             rotatedArr[n-1-i][j] = arr[n-1-j][n-1-i];
-
-            //Should not call Willcollide for every element in array
-            if(rotatedArr[i][2] == 0 && WillCollide(MOVE_RIGHT))
-            {
-                RotationWillCollideRight = true;
-            }
-            if(rotatedArr[i][0] == 0 && WillCollide(MOVE_LEFT))
-            {
-                RotationWillCollideLeft = true;
-            }
-
         }
     }
 
-
-    //This code causes problems but it needs to be implemented eventually because rotation blocking plays very bad
-    /*
-    if(p_currentPiece != nullptr)
-    {
-        if(RotationWillCollideRight && !WillCollide(MOVE_LEFT))
-        {
-            p_currentPiece->Move(MOVE_LEFT);
-            MovePiece(MOVE_LEFT);
-        }
-        if(RotationWillCollideLeft && !WillCollide(MOVE_RIGHT))
-        {
-            p_currentPiece->Move(MOVE_RIGHT);
-            MovePiece(MOVE_RIGHT);
-        }
-        if(RotationWillCollideLeft && RotationWillCollideRight)
-        {
-            return false;
-        }
-    }else
-    {
-        std::cout<<"invalid pointer\n";
-        exit(1);
-    }
-    */
-    if(RotationWillCollideLeft || RotationWillCollideRight)
-    {
-        return false;
-    }
     for(int i = m_piecePos.y; i < m_piecePos.y + n; i++)
     {
         for(int j = m_piecePos.x; j < m_piecePos.x + n; j++)
         {
+            if(rotatedArr[i-m_piecePos.y][j-m_piecePos.x] - 1 == m_board[i][j])
+            {
+                return false;
+            }
+        }
+    }
 
+    for(int i = m_piecePos.y; i < m_piecePos.y + n; i++)
+    {
+        for(int j = m_piecePos.x; j < m_piecePos.x + n; j++)
+        {
             m_board[i][j] = rotatedArr[i-m_piecePos.y][j-m_piecePos.x];
         }
     }
