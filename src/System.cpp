@@ -16,6 +16,7 @@ sf::Color System::ColorPiece(PieceType type)
         case Z_BLOCK:
             return sf::Color::Green;
         case L_BLOCK:
+            //Orange
             return {255, 165, 0};
         case J_BLOCK:
             //Pink
