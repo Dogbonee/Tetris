@@ -21,6 +21,7 @@ void State::HandleEvents()
                 //Key repeat enabled
                     HandleKeyboardInput(event.key.code);
             break;
+
         }
     }
 }

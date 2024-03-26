@@ -6,6 +6,7 @@
 
 #include <iostream>
 
+#include "Menu.h"
 
 
 StateMachine::StateMachine() :m_window {sf::VideoMode(System::WIDTH, System::HEIGHT), "Tetris", sf::Style::Close}
@@ -13,6 +14,15 @@ StateMachine::StateMachine() :m_window {sf::VideoMode(System::WIDTH, System::HEI
     std::cout<<"Starting state machine\n";
 
     //
+}
+
+StateMachine::~StateMachine()
+{
+    for(auto* state : m_states)
+    {
+        delete state;
+    }
+    m_states.clear();
 }
 
 
@@ -36,12 +46,19 @@ void StateMachine::Run()
 
 void StateMachine::AddState(StateName name)
 {
+    std::cout<<"Adding game state\n";
     switch(name)
     {
-        case GAME:
-            std::cout<<"Adding game state\n";
+        case MENU: {
+            Menu* menu = new Menu(*this, m_window);
+            m_states.emplace_back(menu);
+        }
+            break;
+        case GAME: {
             Game* game = new Game(*this, m_window);
             m_states.emplace_back(game);
+        }
+            break;
     }
 
 }
@@ -49,9 +66,5 @@ void StateMachine::AddState(StateName name)
 void StateMachine::SwitchState(StateName state)
 {
     std::cout<<"Switching to state " << state << "\n";
-    //Allows the game to be run without the menu state being added
-    //after the menustate is added, remove this.
-    std::cout<<"State manually set to 0 for debugging purposes\n";
-    state = static_cast<StateName>(0);
     p_currentState = m_states[state];
 }

@@ -27,6 +27,7 @@ class StateMachine {
 
 public:
     StateMachine();
+    ~StateMachine();
     void Run();
     void SwitchState(StateName state);
     void AddState(StateName name);

@@ -15,26 +15,26 @@ Game::Game(StateMachine &sm, sf::RenderWindow &window) : State(sm, window),
                                                          m_speedTickLength(m_defaultTickLength / 10),
                                                          m_tickLength(m_defaultTickLength),
                                                          m_nextPiecePosition(650, 100), m_holdPiecePosition(650, 250),
-                                                         m_hasHeld(false), m_hasHeldThisTurn(false), m_score(0)
+                                                         m_hasHeld(false), m_hasHeldThisTurn(false), m_score(0), m_isGameOver(false)
 {
-    if (!m_textFont.loadFromFile("../res/Pixeboy.ttf"))
+    if (!GlobalResources::BlockFont.loadFromFile("../res/Pixeboy.ttf"))
     {
         std::cout << "Font could not be loaded!\n";
     }
 
-    m_scoreLabel.setFont(m_textFont);
+    m_scoreLabel.setFont(GlobalResources::BlockFont);
     m_scoreLabel.setCharacterSize(60);
     m_scoreLabel.setPosition(50, 100);
     m_scoreLabel.setString("Score");
-    m_nextLabel.setFont(m_textFont);
+    m_nextLabel.setFont(GlobalResources::BlockFont);
     m_nextLabel.setCharacterSize(40);
     m_nextLabel.setPosition(605, 20);
     m_nextLabel.setString("Next");
-    m_holdLabel.setFont(m_textFont);
+    m_holdLabel.setFont(GlobalResources::BlockFont);
     m_holdLabel.setCharacterSize(40);
     m_holdLabel.setPosition(605, 170);
     m_holdLabel.setString("Hold");
-    m_scoreText.setFont(m_textFont);
+    m_scoreText.setFont(GlobalResources::BlockFont);
     m_scoreText.setCharacterSize(40);
     setScore();
 
@@ -49,6 +49,12 @@ Game::Game(StateMachine &sm, sf::RenderWindow &window) : State(sm, window),
 void Game::Render()
 {
     p_window->clear();
+    if(m_isGameOver)
+    {
+        p_window->draw(m_gameOverScreen);
+        p_window->display();
+        return;
+    }
     p_window->draw(m_board);
     p_window->draw(m_currentPiece);
     p_window->draw(m_nextPiece);
@@ -318,7 +324,7 @@ void Game::DropPiece()
 
 void Game::GameOver()
 {
-    std::cout<<"Game over!\n";
-    exit(0);
+    m_isGameOver = true;
+    m_gameOverScreen.SetGameOverScore(m_score);
 }
 

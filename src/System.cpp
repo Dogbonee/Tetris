@@ -26,3 +26,10 @@ sf::Color System::ColorPiece(PieceType type)
     }
     return sf::Color::White;
 }
+
+sf::Vector2f System::CenterTextOrigin(sf::Text text)
+{
+    sf::FloatRect textRect = text.getLocalBounds();
+    sf::Vector2f center(textRect.left + textRect.width/2, textRect.top + textRect.height/2);
+    return center;
+}
