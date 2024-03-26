@@ -12,6 +12,10 @@ set(SOURCE_FILES src/main.cpp
         src/System.h
         src/Piece.cpp
         src/Piece.h
+        src/State.cpp
+        src/State.hpp
+        src/StateMachine.cpp
+        src/StateMachine.hpp
 )
 set(SFML_STATIC_LIBRARIES TRUE)
 
