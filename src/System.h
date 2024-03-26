@@ -4,8 +4,10 @@
 
 #ifndef SYSTEM_H
 #define SYSTEM_H
-#include <SFML/System/Vector2.hpp>
+#include <SFML/Graphics.hpp>
 #include "Piece.h"
+
+enum PieceType : int;
 
 class System {
 public:

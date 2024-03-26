@@ -4,9 +4,9 @@
 
 #ifndef GAMEOVER_H
 #define GAMEOVER_H
-#include <SFML/Graphics.hpp>
-#include "ResourceLoader.h"
 
+#include "System.h"
+#include "ResourceLoader.h"
 
 
 class GameOver : public sf::Drawable{

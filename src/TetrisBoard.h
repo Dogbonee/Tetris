@@ -4,8 +4,8 @@
 
 #ifndef TETRISBOARD_H
 #define TETRISBOARD_H
-#include <SFML/Graphics.hpp>
 #include <array>
+#include "System.h"
 
 #include "Piece.h"
 

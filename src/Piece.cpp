@@ -7,7 +7,7 @@
 #include <cmath>
 #include <iostream>
 
-#include "System.h"
+
 
 
 Piece::Piece(PieceType type) : m_level(0)

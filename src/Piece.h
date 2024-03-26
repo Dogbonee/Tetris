@@ -4,8 +4,9 @@
 
 #ifndef PIECE_H
 #define PIECE_H
+
+#include "System.h"
 #include <vector>
-#include <SFML/Graphics.hpp>
 
 
 

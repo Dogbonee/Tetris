@@ -4,14 +4,11 @@
 
 #ifndef APP_H
 #define APP_H
-#include <SFML/graphics.hpp>
 
-#include "ResourceLoader.h"
 #include "Piece.h"
 #include "System.h"
 #include "TetrisBoard.h"
 #include <ctime>
-
 #include "GameOver.h"
 #include "State.hpp"
 

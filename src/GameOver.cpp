@@ -4,8 +4,6 @@
 
 #include "GameOver.h"
 
-#include "System.h"
-
 GameOver::GameOver()
 {
     m_gameoverText.setFont(GlobalResources::BlockFont);

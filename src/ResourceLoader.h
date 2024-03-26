@@ -4,7 +4,7 @@
 
 #ifndef RESOURCELOADER_H
 #define RESOURCELOADER_H
-#include <SFML/Graphics/Font.hpp>
+#include "System.h"
 
 namespace GlobalResources {
     inline sf::Font BlockFont;

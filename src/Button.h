@@ -5,7 +5,6 @@
 #ifndef BUTTON_H
 #define BUTTON_H
 #include <functional>
-#include <SFML/Graphics.hpp>
 #include "System.h"
 
 class Button : public sf::Drawable{

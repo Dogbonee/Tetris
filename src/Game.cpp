@@ -7,15 +7,15 @@
 #include <iostream>
 
 Game::Game(StateMachine &sm, sf::RenderWindow &window) : State(sm, window),
-                                                         m_board(&m_currentPiece),
-                                                         m_ghostBoard(&m_ghostPiece),
-                                                         m_currentPiece(O_BLOCK), m_nextPiece(O_BLOCK),
-                                                         m_holdPiece(O_BLOCK), m_ghostPiece(m_currentPiece),
-                                                         m_defaultTickLength(System::m_levelOneTick),
-                                                         m_speedTickLength(m_defaultTickLength / 10),
                                                          m_tickLength(m_defaultTickLength),
+                                                         m_defaultTickLength(System::m_levelOneTick),
+                                                         m_speedTickLength(m_defaultTickLength / 10), m_board(&m_currentPiece),
+                                                         m_ghostBoard(&m_ghostPiece), m_currentPiece(O_BLOCK),
+                                                         m_nextPiece(O_BLOCK),
+                                                         m_holdPiece(O_BLOCK),
+                                                         m_ghostPiece(m_currentPiece),
                                                          m_nextPiecePosition(650, 100), m_holdPiecePosition(650, 250),
-                                                         m_hasHeld(false), m_hasHeldThisTurn(false), m_score(0), m_isGameOver(false)
+                                                         m_hasHeld(false), m_hasHeldThisTurn(false), m_isGameOver(false), m_score(0)
 {
     if (!GlobalResources::BlockFont.loadFromFile("../res/Pixeboy.ttf"))
     {
