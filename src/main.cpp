@@ -1,9 +1,14 @@
-#include "Game.h"
+#include "StateMachine.hpp"
 #include <Windows.h>
 int main()
 {
     ShowWindow( GetConsoleWindow(), SW_HIDE );
-    Game game;
-    game.Run();
+    GlobalResources::LoadResources();
+    StateMachine sm;
+
+    sm.AddState(MENU);
+    sm.AddState(GAME);
+    sm.SwitchState(MENU);
+    sm.Run();
     return 0;
 }

@@ -6,30 +6,33 @@
 #define APP_H
 #include <SFML/graphics.hpp>
 
+#include "ResourceLoader.h"
 #include "Piece.h"
 #include "System.h"
 #include "TetrisBoard.h"
 #include <ctime>
-class Game {
+
+#include "GameOver.h"
+#include "State.hpp"
+
+class Game : public State{
 
 
-
-    sf::RenderWindow m_window;
-    sf::Event m_event{};
     sf::Clock m_clock;
     float m_tickLength;
     float m_defaultTickLength;
     float m_speedTickLength;
 
-    void Render();
-    void HandleEvents();
-    void HandleKeyboardInput(sf::Keyboard::Key keyCode);
-    void Update();
+    GameOver m_gameOverScreen;
+
+    void Render() override;
+    void HandleKeyboardInput(sf::Keyboard::Key keyCode) override;
+    void Update() override;
 
 
 
 public:
-    Game();
+    Game(StateMachine &sm, sf::RenderWindow &window);
     void Run();
 
 
@@ -50,6 +53,8 @@ private:
     bool m_hasHeld;
     bool m_hasHeldThisTurn;
 
+    bool m_isGameOver;
+
     unsigned long m_score;
 
     //UI
@@ -57,7 +62,6 @@ private:
     sf::Text m_scoreLabel;
     sf::Text m_nextLabel;
     sf::Text m_holdLabel;
-    sf::Font m_textFont;
 
     void setScore();
 

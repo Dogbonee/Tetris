@@ -24,6 +24,7 @@ public:
     static constexpr float m_levelSixTick = 0.05f;
 
     static sf::Color ColorPiece(PieceType type);
+    static sf::Vector2f CenterTextOrigin(sf::Text text);
 };
 
 

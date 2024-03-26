@@ -49,6 +49,7 @@ void Piece::generatePieceArray(int type)
             {0,0,0},
             {1,1,0},
             {0,1,1}};
+            break;
         case L_BLOCK:
             m_piece = {
             {0,0,0},

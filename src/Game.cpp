@@ -6,34 +6,35 @@
 
 #include <iostream>
 
-Game::Game() : m_window{sf::VideoMode(System::WIDTH, System::HEIGHT), "Tetris", sf::Style::Close},
-               m_board(&m_currentPiece),
-               m_ghostBoard(&m_ghostPiece),
-               m_currentPiece(O_BLOCK), m_nextPiece(O_BLOCK), m_holdPiece(O_BLOCK), m_ghostPiece(m_currentPiece),
-               m_defaultTickLength(System::m_levelOneTick),
-               m_speedTickLength(m_defaultTickLength/10), m_tickLength(m_defaultTickLength), m_nextPiecePosition(650,100), m_holdPiecePosition(650, 250),
-                m_hasHeld(false), m_hasHeldThisTurn(false), m_score(0)
+Game::Game(StateMachine &sm, sf::RenderWindow &window) : State(sm, window),
+                                                         m_board(&m_currentPiece),
+                                                         m_ghostBoard(&m_ghostPiece),
+                                                         m_currentPiece(O_BLOCK), m_nextPiece(O_BLOCK),
+                                                         m_holdPiece(O_BLOCK), m_ghostPiece(m_currentPiece),
+                                                         m_defaultTickLength(System::m_levelOneTick),
+                                                         m_speedTickLength(m_defaultTickLength / 10),
+                                                         m_tickLength(m_defaultTickLength),
+                                                         m_nextPiecePosition(650, 100), m_holdPiecePosition(650, 250),
+                                                         m_hasHeld(false), m_hasHeldThisTurn(false), m_score(0), m_isGameOver(false)
 {
-
-
-    if(!m_textFont.loadFromFile("../res/Pixeboy.ttf"))
+    if (!GlobalResources::BlockFont.loadFromFile("../res/Pixeboy.ttf"))
     {
-        std::cout<<"Font could not be loaded!\n";
+        std::cout << "Font could not be loaded!\n";
     }
 
-    m_scoreLabel.setFont(m_textFont);
+    m_scoreLabel.setFont(GlobalResources::BlockFont);
     m_scoreLabel.setCharacterSize(60);
-    m_scoreLabel.setPosition(50,100);
+    m_scoreLabel.setPosition(50, 100);
     m_scoreLabel.setString("Score");
-    m_nextLabel.setFont(m_textFont);
+    m_nextLabel.setFont(GlobalResources::BlockFont);
     m_nextLabel.setCharacterSize(40);
-    m_nextLabel.setPosition(605,20);
+    m_nextLabel.setPosition(605, 20);
     m_nextLabel.setString("Next");
-    m_holdLabel.setFont(m_textFont);
+    m_holdLabel.setFont(GlobalResources::BlockFont);
     m_holdLabel.setCharacterSize(40);
-    m_holdLabel.setPosition(605,170);
+    m_holdLabel.setPosition(605, 170);
     m_holdLabel.setString("Hold");
-    m_scoreText.setFont(m_textFont);
+    m_scoreText.setFont(GlobalResources::BlockFont);
     m_scoreText.setCharacterSize(40);
     setScore();
 
@@ -47,44 +48,33 @@ Game::Game() : m_window{sf::VideoMode(System::WIDTH, System::HEIGHT), "Tetris", 
 
 void Game::Render()
 {
-    m_window.clear();
-    m_window.draw(m_board);
-    m_window.draw(m_currentPiece);
-    m_window.draw(m_nextPiece);
-    m_window.draw(m_scoreLabel);
-    m_window.draw(m_scoreText);
-    m_window.draw(m_holdLabel);
-    m_window.draw(m_nextLabel);
+    p_window->clear();
+    if(m_isGameOver)
+    {
+        p_window->draw(m_gameOverScreen);
+        p_window->display();
+        return;
+    }
+    p_window->draw(m_board);
+    p_window->draw(m_currentPiece);
+    p_window->draw(m_nextPiece);
+    p_window->draw(m_scoreLabel);
+    p_window->draw(m_scoreText);
+    p_window->draw(m_holdLabel);
+    p_window->draw(m_nextLabel);
 
     if(m_currentPiece.GetPosition() != m_ghostPiece.GetPosition())
     {
-        m_window.draw(m_ghostPiece);
+        p_window->draw(m_ghostPiece);
     }
     if(m_hasHeld)
     {
-        m_window.draw(m_holdPiece);
+        p_window->draw(m_holdPiece);
     }
     //DrawPieces(m_window);
-    m_window.display();
+    p_window->display();
 }
 
-void Game::HandleEvents()
-{
-
-    for(sf::Event event{}; m_window.pollEvent(event);)
-    {
-        switch(event.type)
-        {
-            case sf::Event::Closed:
-                m_window.close();
-                break;
-            case sf::Event::KeyPressed:
-                //Key repeat enabled
-                HandleKeyboardInput(event.key.code);
-                break;
-        }
-    }
-}
 
 void Game::HandleKeyboardInput(sf::Keyboard::Key keyCode)
 {
@@ -119,7 +109,7 @@ void Game::HandleKeyboardInput(sf::Keyboard::Key keyCode)
 
 void Game::Update()
 {
-    while(m_window.isOpen())
+    while(p_window->isOpen())
     {
         //should handle in other function in future
         m_tickLength = sf::Keyboard::isKeyPressed(sf::Keyboard::Down) ? m_speedTickLength : m_defaultTickLength;
@@ -316,7 +306,7 @@ void Game::HoldPiece()
     SpawnPiece(m_hasHeld ? m_holdPiece.GetType() : m_nextPiece.GetType());
     m_holdPiece = {currentType};
     m_holdPiece.SetPosition(m_holdPiecePosition);
-    if(m_holdPiece.GetType() == I_BLOCK || m_nextPiece.GetType() == O_BLOCK)
+    if(m_holdPiece.GetType() == I_BLOCK || m_holdPiece.GetType() == O_BLOCK)
     {
         m_holdPiece.SetPosition(sf::Vector2f(m_holdPiecePosition.x, m_holdPiecePosition.y + System::PIECE_SIZE));
     }
@@ -334,7 +324,7 @@ void Game::DropPiece()
 
 void Game::GameOver()
 {
-    std::cout<<"Game over!\n";
-    exit(0);
+    m_isGameOver = true;
+    m_gameOverScreen.SetGameOverScore(m_score);
 }
 
