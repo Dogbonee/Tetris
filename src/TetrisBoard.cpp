@@ -46,7 +46,6 @@ bool TetrisBoard::RotatePiece(RotationOption rotation)
 
     int arr[4][4];
     int rotatedArr[4][4];
-    int xorArr [4][4];
 
     //Hack to avoid sigsegv when rotating i piece at border
     if(m_currentType == I_BLOCK && m_piecePos.x > 7) return false;
@@ -85,12 +84,14 @@ bool TetrisBoard::RotatePiece(RotationOption rotation)
         }
     }
 
+
     for(int i = m_piecePos.y; i < m_piecePos.y + n; i++)
     {
         for(int j = m_piecePos.x; j < m_piecePos.x + n; j++)
         {
-            m_board[i][j] = rotatedArr[i-m_piecePos.y][j-m_piecePos.x];
+            m_board[i][j] = m_board[i][j] == 1 ? 1 : rotatedArr[i-m_piecePos.y][j-m_piecePos.x];
         }
+
     }
 
     return true;
