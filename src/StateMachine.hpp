@@ -23,6 +23,7 @@ class StateMachine {
     State* p_currentState;
     std::vector<State*> m_states;
     sf::RenderWindow m_window;
+    sf::Clock m_clock;
     void UpdateState();
 
 public:

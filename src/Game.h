@@ -16,6 +16,7 @@ class Game : public State{
 
 
     sf::Clock m_clock;
+    sf::Text m_fpsCounter;
     float m_tickLength;
     float m_defaultTickLength;
     float m_speedTickLength;

@@ -4,6 +4,7 @@
 
 #include "Game.h"
 
+#include <cmath>
 #include <iostream>
 
 Game::Game(StateMachine &sm, sf::RenderWindow &window) : State(sm, window),
@@ -38,6 +39,10 @@ Game::Game(StateMachine &sm, sf::RenderWindow &window) : State(sm, window),
     m_scoreText.setCharacterSize(40);
     setScore();
 
+    m_fpsCounter.setFont(GlobalResources::BlockFont);
+    m_fpsCounter.setPosition(20,20);
+    m_fpsCounter.setCharacterSize(30);
+
     //Init all ui before this point
     std::srand(std::time(nullptr));
     SpawnPiece(static_cast<PieceType>(std::rand() % 7));
@@ -49,6 +54,7 @@ Game::Game(StateMachine &sm, sf::RenderWindow &window) : State(sm, window),
 void Game::Render()
 {
     p_window->clear();
+    p_window->draw(m_fpsCounter);
     if(m_isGameOver)
     {
         p_window->draw(m_gameOverScreen);
@@ -111,6 +117,7 @@ void Game::Update()
 {
     while(p_window->isOpen())
     {
+
         //should handle in other function in future
         m_tickLength = sf::Keyboard::isKeyPressed(sf::Keyboard::Down) ? m_speedTickLength : m_defaultTickLength;
         HandleEvents();
@@ -165,6 +172,7 @@ void Game::ManageGameClock()
     {
         Tick();
         tickTimeRemaining = m_tickLength;
+        m_fpsCounter.setString("FPS: " + std::to_string(static_cast<int>(round(1000000/m_clock.restart().asMicroseconds()))));
     }
 }
 
