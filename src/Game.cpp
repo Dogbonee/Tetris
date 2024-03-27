@@ -4,8 +4,7 @@
 
 #include "Game.h"
 
-#include <cmath>
-#include <iostream>
+
 
 Game::Game(StateMachine &sm, sf::RenderWindow &window) : State(sm, window),
                                                          m_tickLength(m_defaultTickLength),
@@ -115,15 +114,11 @@ void Game::HandleKeyboardInput(sf::Keyboard::Key keyCode)
 
 void Game::Update()
 {
-    while(p_window->isOpen())
-    {
-
-        //should handle in other function in future
-        m_tickLength = sf::Keyboard::isKeyPressed(sf::Keyboard::Down) ? m_speedTickLength : m_defaultTickLength;
-        HandleEvents();
-        ManageGameClock();
-        Render();
-    }
+    //should handle in other function in future
+    m_tickLength = sf::Keyboard::isKeyPressed(sf::Keyboard::Down) ? m_speedTickLength : m_defaultTickLength;
+    HandleEvents();
+    ManageGameClock();
+    Render();
 }
 
 void Game::Run()

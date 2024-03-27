@@ -5,28 +5,33 @@
 #ifndef APP_H
 #define APP_H
 
+
 #include "Piece.h"
 #include "System.h"
 #include "TetrisBoard.h"
-#include <ctime>
 #include "GameOver.h"
-#include "State.hpp"
+#include "State.h"
+#include <ctime>
+#include <cmath>
+#include <iostream>
 
 class Game : public State{
 
 
+
+
+protected:
+    void Render() override;
+    void HandleKeyboardInput(sf::Keyboard::Key keyCode) override;
+    void Update() override;
+
     sf::Clock m_clock;
-    sf::Text m_fpsCounter;
     float m_tickLength;
     float m_defaultTickLength;
     float m_speedTickLength;
 
     GameOver m_gameOverScreen;
-
-    void Render() override;
-    void HandleKeyboardInput(sf::Keyboard::Key keyCode) override;
-    void Update() override;
-
+    sf::Text m_fpsCounter;
 
 
 public:
@@ -34,7 +39,7 @@ public:
     void Run();
 
 
-private:
+protected:
     //Game objects
     TetrisBoard m_board;
     TetrisBoard m_ghostBoard;
@@ -69,8 +74,8 @@ private:
     //Game functions
     void SpawnPiece(PieceType type);
 
-    void ManageGameClock();
-    bool Tick();
+    virtual void ManageGameClock();
+    virtual bool Tick();
     void MovePieceComponents(MovementOption direction);
     void RotatePieceComponents(RotationOption direction);
     void HandleScoring();
@@ -79,7 +84,7 @@ private:
     void ManageGhostPiece();
     void HandleNextPiece();
     void HoldPiece();
-    void DropPiece();
+    virtual void DropPiece();
     void GameOver();
 };
 

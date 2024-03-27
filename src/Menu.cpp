@@ -6,7 +6,9 @@
 
 #include <iostream>
 
-Menu::Menu(StateMachine &sm, sf::RenderWindow &window) : State(sm, window), m_startButton(sf::Vector2f(400,250), "Start")
+Menu::Menu(StateMachine &sm, sf::RenderWindow &window) : State(sm, window),
+                                                         m_standardButton(sf::Vector2f(300, 175), "Play Standard"),
+                                                         m_dailyButton(sf::Vector2f(300, 175), "Play Daily")
 {
     std::cout << "Menu!\n";
     m_titleLabel.setFont(GlobalResources::BlockFont);
@@ -16,16 +18,27 @@ Menu::Menu(StateMachine &sm, sf::RenderWindow &window) : State(sm, window), m_st
     m_titleLabel.setOrigin(System::CenterTextOrigin(m_titleLabel));
     m_titleLabel.setPosition(System::WIDTH / 2, 75);
 
-    m_startButton.setPosition(System::WIDTH/2, System::HEIGHT/2);
-    m_startButton.setColor(sf::Color::Red);
+    m_standardButton.setPosition(System::WIDTH / 4, System::HEIGHT / 2);
+    m_standardButton.setColor(sf::Color::Red);
 
-    m_startButton.callback = [this] { StartGame(); };
-    m_buttons.push_back(m_startButton);
+    m_dailyButton.setPosition(System::WIDTH * 3/4, System::HEIGHT / 2);
+    m_dailyButton.setColor(sf::Color::Green);
+
+    m_standardButton.callback = [this] { StartStandardGame(); };
+    m_dailyButton.callback = [this] { StartDailyGame(); };
+
+    m_buttons.push_back(m_standardButton);
+    m_buttons.push_back(m_dailyButton);
 }
 
-void Menu::StartGame()
+void Menu::StartStandardGame()
 {
     p_stateMachine->SwitchState(GAME);
+}
+
+void Menu::StartDailyGame()
+{
+    p_stateMachine->SwitchState(DAILY_GAME);
 }
 
 void Menu::Render()

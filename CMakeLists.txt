@@ -13,9 +13,9 @@ set(SOURCE_FILES src/main.cpp
         src/Piece.cpp
         src/Piece.h
         src/State.cpp
-        src/State.hpp
+        src/State.h
         src/StateMachine.cpp
-        src/StateMachine.hpp
+        src/StateMachine.h
         src/Menu.cpp
         src/Menu.h
         src/ResourceLoader.cpp
@@ -24,6 +24,8 @@ set(SOURCE_FILES src/main.cpp
         src/Button.h
         src/GameOver.cpp
         src/GameOver.h
+        src/DailyGame.cpp
+        src/DailyGame.h
 )
 set(SFML_STATIC_LIBRARIES TRUE)
 

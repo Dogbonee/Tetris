@@ -4,7 +4,7 @@
 
 #ifndef STATEMACHINE_HPP
 #define STATEMACHINE_HPP
-#include "State.hpp"
+#include "State.h"
 #include "Game.h"
 #include <vector>
 
@@ -12,7 +12,8 @@
 enum StateName : int{
 
     MENU = 0,
-    GAME
+    GAME,
+    DAILY_GAME
 
 };
 
@@ -31,7 +32,7 @@ public:
     ~StateMachine();
     void Run();
     void SwitchState(StateName state);
-    void AddState(StateName name);
+    void AddState();
 
 
 
