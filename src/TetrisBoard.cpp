@@ -201,12 +201,7 @@ void TetrisBoard::SetPiece()
             {
                 m_board[y][x] = 1;
 
-                sf::RectangleShape rect(sf::Vector2f(System::PIECE_SIZE, System::PIECE_SIZE));
-                rect.setPosition(System::PIECE_SIZE * x + System::X_OFFSET, System::PIECE_SIZE * (y-1) + System::Y_OFFSET - System::PIECE_SIZE/2);
-                rect.setOutlineColor(sf::Color::Black);
-                rect.setOutlineThickness(1);
-                rect.setFillColor(System::ColorPiece(p_currentPiece->GetType()));
-                m_vRect.push_back(rect);
+                AddRect(p_currentPiece->GetType(), sf::Vector2i(x,y));
 
 
             }
@@ -215,6 +210,16 @@ void TetrisBoard::SetPiece()
     ResetPiece();
 
 
+}
+
+void TetrisBoard::AddRect(PieceType type, sf::Vector2i pos)
+{
+    sf::RectangleShape rect(sf::Vector2f(System::PIECE_SIZE, System::PIECE_SIZE));
+    rect.setPosition(System::PIECE_SIZE * pos.x + System::X_OFFSET, System::PIECE_SIZE * (pos.y-1) + System::Y_OFFSET - System::PIECE_SIZE/2);
+    rect.setOutlineColor(sf::Color::Black);
+    rect.setOutlineThickness(1);
+    rect.setFillColor(System::ColorPiece(p_currentPiece->GetType()));
+    m_vRect.push_back(rect);
 }
 
 void TetrisBoard::ResetPiece()

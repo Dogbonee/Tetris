@@ -5,6 +5,7 @@
 #ifndef DAILYGAME_H
 #define DAILYGAME_H
 #define SECONDS_PER_DAY 86400
+#define MST_OFFSET 17
 #include "Game.h"
 #include <fstream>
 
@@ -17,11 +18,11 @@ class DailyGame : public Game{
 
 
 
-    unsigned long m_previousTime;
-    unsigned int m_timeDifference;
+    unsigned long m_nextTime;
     unsigned int m_timeLeft;
 
     void HandleTimeText();
+    void LoadBoard(std::ifstream& file);
 
     //bool Tick() override;
     void ManageGameClock() override;

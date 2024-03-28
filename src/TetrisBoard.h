@@ -45,6 +45,7 @@ public:
     void MovePiece(MovementOption direction);
     bool WillCollide(MovementOption direction);
     void SetPiece();
+    void AddRect(PieceType type, sf::Vector2i pos);
     void ResetPiece();
     std::vector<int> CheckLines();
     void ClearLine(int line);

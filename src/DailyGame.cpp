@@ -16,18 +16,19 @@ DailyGame::DailyGame(StateMachine &sm, sf::RenderWindow &window) : Game(sm, wind
     std::getline(file, dateBuf);
     std::cout<<dateBuf<<"\n";
 
+    LoadBoard(file);
+
     file.close();
 
     try
     {
-        m_previousTime = std::stoi(dateBuf);
+        m_nextTime = std::stoi(dateBuf);
 
     }catch (std::exception& e)
     {
         std::cout<<"Could not load time\n";
-        exit(1);
+        m_nextTime = 0;
     }
-    m_previousTime = m_previousTime == 0 ? std::time(nullptr) - std::time(nullptr)%SECONDS_PER_DAY + SECONDS_PER_DAY: m_previousTime;
 
 
 
@@ -42,17 +43,33 @@ DailyGame::DailyGame(StateMachine &sm, sf::RenderWindow &window) : Game(sm, wind
 
     HandleTimeText();
 
-    m_hasPlaced = m_timeDifference < SECONDS_PER_DAY;
+    m_hasPlaced = std::time(nullptr) < m_nextTime;
 }
 
 void DailyGame::HandleTimeText()
 {
-    m_timeDifference = std::time(nullptr) - m_previousTime;
-
-    unsigned int hoursLeft = m_timeDifference / 3600;
-    unsigned int minutesLeft = (m_timeDifference % 3600) / 60;
-    m_dailyText.setString("Next Piece in " + std::to_string(hoursLeft)+':'+std::to_string(minutesLeft));
+    unsigned int difference = m_nextTime - std::time(nullptr);
+    unsigned int hoursLeft = difference / 3600 - MST_OFFSET;
+    unsigned int minutesLeft = (difference % 3600) / 60 + 1;
+    std::string minutesZero = minutesLeft < 10 ? "0" : "";
+    m_dailyText.setString("Next Piece in " + std::to_string(hoursLeft) + ':'+ minutesZero + std::to_string(minutesLeft));
     m_dailyText.setOrigin(System::CenterTextOrigin(m_dailyText));
+}
+
+void DailyGame::LoadBoard(std::ifstream& file)
+{
+    int i = 0;
+    for(std::string buf; std::getline(file, buf); i++)
+    {
+        if(i == 0 || buf.empty())continue;
+        for(int j = 0; j < buf.size(); j++)
+        {
+            m_board[i][j] = buf[j] == '1' ? 1 : 0;
+            //In the future we need to save the pieces as different numbers and then add rects based on those numbers
+        }
+    }
+    SpawnPiece(static_cast<PieceType>(std::rand() % 7));
+    ManageGhostPiece();
 }
 
 void DailyGame::ManageGameClock()
@@ -62,7 +79,7 @@ void DailyGame::ManageGameClock()
 
     if((tickTimeRemaining <= 0 || tickTimeRemaining > m_tickLength) && !m_hasPlaced)
     {
-        m_hasPlaced = !Tick() ? true : m_hasPlaced;
+        if(!Tick())ConfirmPiece();
         tickTimeRemaining = m_tickLength;
         m_fpsCounter.setString("FPS: " + std::to_string(static_cast<int>(round(1000000/m_clock.restart().asMicroseconds()))));
     }
@@ -117,7 +134,7 @@ void DailyGame::DropPiece()
     if(!m_hasPlaced)
     {
         Game::DropPiece();
-        m_hasPlaced = true;
+        ConfirmPiece();
     }
 }
 
@@ -125,9 +142,17 @@ void DailyGame::ConfirmPiece()
 {
     std::ofstream file("../save.tetr");
     m_hasPlaced = true;
-    HandleTimeText();
     int secondsTmmr = (std::time(nullptr) + SECONDS_PER_DAY);
-    m_timeLeft = (secondsTmmr) - secondsTmmr % SECONDS_PER_DAY;
-    file << m_timeLeft;
+    m_nextTime = (secondsTmmr) - secondsTmmr % SECONDS_PER_DAY;
+    HandleTimeText();
+    file << m_nextTime << '\n';
+    for(int i = 0; i < System::BOARD_HEIGHT; i++)
+    {
+        for(int j = 0; j < System::BOARD_WIDTH; j++)
+        {
+            file << (m_board[i][j] & 1);
+        }
+        file<<'\n';
+    }
     file.close();
 }
