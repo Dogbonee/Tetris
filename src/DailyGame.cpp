@@ -48,9 +48,11 @@ DailyGame::DailyGame(StateMachine &sm, sf::RenderWindow &window) : Game(sm, wind
 
 void DailyGame::HandleTimeText()
 {
-    unsigned int difference = m_nextTime - std::time(nullptr);
-    unsigned int hoursLeft = difference / 3600 - MST_OFFSET;
-    unsigned int minutesLeft = (difference % 3600) / 60 + 1;
+    long difference = m_nextTime - std::time(nullptr);
+    long hoursLeft = difference / 3600 - MST_OFFSET;
+    //Handle 24 hour wrap around
+    hoursLeft = hoursLeft < 0 ? 24 + hoursLeft : hoursLeft;
+    long minutesLeft = (difference % 3600) / 60 + 1;
     std::string minutesZero = minutesLeft < 10 ? "0" : "";
     m_dailyText.setString("Next Piece in " + std::to_string(hoursLeft) + ':'+ minutesZero + std::to_string(minutesLeft));
     m_dailyText.setOrigin(System::CenterTextOrigin(m_dailyText));
@@ -142,8 +144,8 @@ void DailyGame::ConfirmPiece()
 {
     std::ofstream file("../save.tetr");
     m_hasPlaced = true;
-    int secondsTmmr = (std::time(nullptr) + SECONDS_PER_DAY);
-    m_nextTime = (secondsTmmr) - secondsTmmr % SECONDS_PER_DAY;
+    time_t secondsTmmr = (std::time(nullptr) + SECONDS_PER_DAY);
+    m_nextTime = secondsTmmr - secondsTmmr % SECONDS_PER_DAY;
     HandleTimeText();
     file << m_nextTime << '\n';
     for(int i = 0; i < System::BOARD_HEIGHT; i++)
