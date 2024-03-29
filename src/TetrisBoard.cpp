@@ -77,7 +77,7 @@ bool TetrisBoard::RotatePiece(RotationOption rotation)
     {
         for(int j = m_piecePos.x; j < m_piecePos.x + n; j++)
         {
-            if(rotatedArr[i-m_piecePos.y][j-m_piecePos.x] - 1 == m_board[i][j])
+            if(m_board[i][j] == 1 || m_board[i][j] > 5)
             {
                 return false;
             }
@@ -181,7 +181,7 @@ bool TetrisBoard::WillCollide(MovementOption direction)
     }
     for(auto& coord : pieceCoords)
     {
-        if(m_board[coord.y + movingDown][coord.x+direction] == 1)
+        if(m_board[coord.y + movingDown][coord.x+direction] == 1 || m_board[coord.y + movingDown][coord.x+direction] > 5)
         {
             return true;
         }
@@ -199,7 +199,8 @@ void TetrisBoard::SetPiece()
         {
             if(m_board[y][x] == 2)
             {
-                m_board[y][x] = 1;
+                //We increment by six because movement uses ints up to 5
+                m_board[y][x] = p_currentPiece->GetType() + 6;
 
                 AddRect(p_currentPiece->GetType(), sf::Vector2i(x,y));
 
@@ -218,7 +219,7 @@ void TetrisBoard::AddRect(PieceType type, sf::Vector2i pos)
     rect.setPosition(System::PIECE_SIZE * pos.x + System::X_OFFSET, System::PIECE_SIZE * (pos.y-1) + System::Y_OFFSET - System::PIECE_SIZE/2);
     rect.setOutlineColor(sf::Color::Black);
     rect.setOutlineThickness(1);
-    rect.setFillColor(System::ColorPiece(p_currentPiece->GetType()));
+    rect.setFillColor(System::ColorPiece(type));
     m_vRect.push_back(rect);
 }
 
