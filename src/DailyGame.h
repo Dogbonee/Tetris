@@ -24,6 +24,9 @@ class DailyGame : public Game{
     void HandleTimeText();
     void LoadBoard(std::ifstream& file);
 
+    char intToHex(int num);
+    int hexToInt(char input);
+
     //bool Tick() override;
     void ManageGameClock() override;
     void Render() override;

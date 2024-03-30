@@ -66,12 +66,30 @@ void DailyGame::LoadBoard(std::ifstream& file)
         if(i == 0 || buf.empty())continue;
         for(int j = 0; j < buf.size(); j++)
         {
-            m_board[i][j] = buf[j] == '1' ? 1 : 0;
-            //In the future we need to save the pieces as different numbers and then add rects based on those numbers
+            m_board[i][j] = hexToInt(buf[j]);
+            if(m_board[i][j] > 5)
+            {
+                m_board.AddRect(static_cast<PieceType>(m_board[i][j] - 6), sf::Vector2i(j,i));
+            }
         }
     }
+    m_board.PrintBoard();
     SpawnPiece(static_cast<PieceType>(std::rand() % 7));
     ManageGhostPiece();
+}
+
+char DailyGame::intToHex(int num)
+{
+    if(num < 10)return std::to_string(num).c_str()[0];
+    return num + 55;
+}
+
+int DailyGame::hexToInt(char input)
+{
+    if(input < 58){
+        return input - 48;
+    }
+    return input - 55;
 }
 
 void DailyGame::ManageGameClock()
@@ -152,7 +170,8 @@ void DailyGame::ConfirmPiece()
     {
         for(int j = 0; j < System::BOARD_WIDTH; j++)
         {
-            file << (m_board[i][j] & 1);
+            if(m_board[i][j] == 2) m_board[i][j] = 0;
+            file << intToHex(m_board[i][j]);
         }
         file<<'\n';
     }
