@@ -14,6 +14,9 @@ enum PieceType : int;
 class Piece;
 using std::array;
 
+using Board = std::vector<std::vector<int>>;
+
+
 enum MovementOption : int{
     MOVE_LEFT = -1,
     MOVE_DOWN = 0,
@@ -28,7 +31,7 @@ enum RotationOption : int{
 class TetrisBoard : public sf::Drawable{
 
     //10x20 board, with room left over for border collisions
-    array<array<uint8_t, 12>,21> m_board;
+    Board m_board;
     sf::RectangleShape m_frame;
     sf::Vector2i m_piecePos;
     std::vector<sf::RectangleShape> m_vRect;
@@ -54,10 +57,10 @@ public:
 
     const sf::Vector2f& getFramePos() const;
     const sf::Vector2i & GetPiecePos() const;
-    const array<array<uint8_t, 12>,21>& GetBoard()const;
+    const Board & GetBoard()const;
     void SetCurrentPieceType(PieceType type);
 
-    array<uint8_t, 12>& operator [](size_t index);
+    std::vector<int>& operator [](size_t index);
     TetrisBoard& operator =(TetrisBoard board);
 };
 
