@@ -53,14 +53,10 @@ bool TetrisBoard::RotatePiece(RotationOption rotation)
     {
         for(int j = m_piecePos.x; j < m_piecePos.x + n; j++)
         {
-            try
-            {
+
                 //Try to populate array with m_board
-                arr[i-m_piecePos.y][j-m_piecePos.x] = m_board[i].at(j) != 1 ? m_board[i][j] : 0;
-            }catch(std::out_of_range& e)
-            {
-                return false;
-            }
+                arr[i-m_piecePos.y][j-m_piecePos.x] = (m_board[i][j] != 1 && m_board[i][j] < 6) ? m_board[i][j] : 0;
+
         }
     }
 
@@ -77,7 +73,7 @@ bool TetrisBoard::RotatePiece(RotationOption rotation)
     {
         for(int j = m_piecePos.x; j < m_piecePos.x + n; j++)
         {
-            if(m_board[i][j] == 1 || m_board[i][j] > 5)
+            if(rotatedArr[i - m_piecePos.y][j - m_piecePos.x] == 2 && (m_board[i][j] == 1 || m_board[i][j] > 5))
             {
                 return false;
             }
@@ -89,11 +85,11 @@ bool TetrisBoard::RotatePiece(RotationOption rotation)
     {
         for(int j = m_piecePos.x; j < m_piecePos.x + n; j++)
         {
-            m_board[i][j] = m_board[i][j] == 1 ? 1 : rotatedArr[i-m_piecePos.y][j-m_piecePos.x];
+            m_board[i][j] = (m_board[i][j] == 1 || m_board[i][j] > 5) ? m_board[i][j] : rotatedArr[i-m_piecePos.y][j-m_piecePos.x];
         }
 
     }
-
+    PrintBoard();
     return true;
 }
 
