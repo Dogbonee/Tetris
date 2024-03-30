@@ -5,7 +5,7 @@
 #ifndef DAILYGAME_H
 #define DAILYGAME_H
 #define SECONDS_PER_DAY 86400
-#define MST_OFFSET 17
+#define MST_OFFSET 18
 #include "Game.h"
 #include <fstream>
 

@@ -166,14 +166,20 @@ void DailyGame::ConfirmPiece()
     m_nextTime = secondsTmmr - secondsTmmr % SECONDS_PER_DAY;
     HandleTimeText();
     file << m_nextTime << '\n';
+
     for(int i = 0; i < System::BOARD_HEIGHT; i++)
     {
         for(int j = 0; j < System::BOARD_WIDTH; j++)
         {
-            if(m_board[i][j] == 2) m_board[i][j] = 0;
+            if(m_board[i][j] == 2)
+            {
+                file<<0;
+                continue;
+            }
             file << intToHex(m_board[i][j]);
         }
         file<<'\n';
     }
+
     file.close();
 }
