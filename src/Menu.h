@@ -5,7 +5,7 @@
 #ifndef MENU_H
 #define MENU_H
 #include "Button.h"
-#include "StateMachine.hpp"
+#include "StateMachine.h"
 
 
 class Menu : public State{
@@ -15,9 +15,11 @@ class Menu : public State{
     sf::Text m_titleLabel;
 
     std::vector<Button> m_buttons;
-    Button m_startButton;
+    Button m_standardButton;
+    Button m_dailyButton;
 
-    void StartGame();
+    void StartStandardGame();
+    void StartDailyGame();
 
 protected:
 

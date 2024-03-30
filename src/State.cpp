@@ -2,7 +2,7 @@
 // Created by minri on 3/25/2024.
 //
 
-#include "State.hpp"
+#include "State.h"
 
 State::State(StateMachine &sm, sf::RenderWindow &window) : p_stateMachine(&sm), p_window(&window)
 {

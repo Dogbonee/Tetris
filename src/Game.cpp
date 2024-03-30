@@ -4,8 +4,7 @@
 
 #include "Game.h"
 
-#include <cmath>
-#include <iostream>
+
 
 Game::Game(StateMachine &sm, sf::RenderWindow &window) : State(sm, window),
                                                          m_tickLength(m_defaultTickLength),
@@ -115,15 +114,11 @@ void Game::HandleKeyboardInput(sf::Keyboard::Key keyCode)
 
 void Game::Update()
 {
-    while(p_window->isOpen())
-    {
-
-        //should handle in other function in future
-        m_tickLength = sf::Keyboard::isKeyPressed(sf::Keyboard::Down) ? m_speedTickLength : m_defaultTickLength;
-        HandleEvents();
-        ManageGameClock();
-        Render();
-    }
+    //should handle in other function in future
+    m_tickLength = sf::Keyboard::isKeyPressed(sf::Keyboard::Down) ? m_speedTickLength : m_defaultTickLength;
+    HandleEvents();
+    ManageGameClock();
+    Render();
 }
 
 void Game::Run()
@@ -150,7 +145,7 @@ void Game::SpawnPiece(PieceType type)
     {
         for(int x = 0; x < pieceSize; x++)
         {
-            if(m_board[y][5+x] == 1)
+            if(m_board[y][5+x] > 5)
             {
                 GameOver();
             }
@@ -172,7 +167,7 @@ void Game::ManageGameClock()
     {
         Tick();
         tickTimeRemaining = m_tickLength;
-        m_fpsCounter.setString("FPS: " + std::to_string(static_cast<int>(round(1000000/m_clock.restart().asMicroseconds()))));
+        m_fpsCounter.setString("FPS: " + std::to_string(static_cast<int>(round(1/m_clock.restart().asSeconds()))));
     }
 }
 

@@ -14,7 +14,7 @@ Button::Button(sf::Vector2f size, sf::String text) : callback(nullptr)
     m_buttonShape.setOrigin(size.x/2, size.y/2);
     m_buttonText.setFont(GlobalResources::BlockFont);
     m_buttonText.setFillColor(sf::Color::White);
-    m_buttonText.setCharacterSize(60);
+    m_buttonText.setCharacterSize(size.x/7);
     m_buttonText.setString(text);
     m_buttonText.setOrigin(System::CenterTextOrigin(m_buttonText));
 }

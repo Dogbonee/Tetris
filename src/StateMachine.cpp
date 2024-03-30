@@ -2,10 +2,11 @@
 // Created by minri on 3/25/2024.
 //
 
-#include "StateMachine.hpp"
+#include "StateMachine.h"
 
 #include <iostream>
 
+#include "DailyGame.h"
 #include "Menu.h"
 
 
@@ -39,31 +40,21 @@ void StateMachine::UpdateState()
 void StateMachine::Run()
 {
     std::cout<<"Game setup successful. Running...\n";
-    m_window.setVerticalSyncEnabled(true);
+    m_window.setFramerateLimit(60);
     while(m_window.isOpen())
     {
-
         UpdateState();
     }
 }
 
-void StateMachine::AddState(StateName name)
+void StateMachine::AddState()
 {
-    std::cout<<"Adding game state\n";
-    switch(name)
-    {
-        case MENU: {
-            Menu* menu = new Menu(*this, m_window);
-            m_states.emplace_back(menu);
-        }
-            break;
-        case GAME: {
-            Game* game = new Game(*this, m_window);
-            m_states.emplace_back(game);
-        }
-            break;
-    }
-
+    Menu* menu = new Menu(*this, m_window);
+    m_states.emplace_back(menu);
+    Game* game = new Game(*this, m_window);
+    m_states.emplace_back(game);
+    DailyGame* dailyGame = new DailyGame(*this, m_window);
+    m_states.emplace_back(dailyGame);
 }
 
 void StateMachine::SwitchState(StateName state)

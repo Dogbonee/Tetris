@@ -19,19 +19,30 @@ TetrisBoard::TetrisBoard(Piece* pCurrentPiece) : m_piecePos(5,0), p_currentPiece
     m_frame.setOrigin(m_frame.getSize().x/2, m_frame.getSize().y/2);
     m_frame.setPosition(System::WIDTH/2, System::HEIGHT/2);
 
-    for(int y = 0; y < m_board.size(); y++)
-    {
-        for(int x = 0; x < m_board[0].size(); x++)
-        {
-            m_board[y][x] = 0;
-        }
-    }
-    for(int i = 0; i < 20; i++)
-    {
-        m_board[i][0] = true;
-        m_board[i][11] = true;
-        m_board[20][i/2 + 1] = true;
-    }
+
+    m_board = {
+            {1,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,1},
+            {1,1,1,1,1,1,1,1,1,1,1,1},
+    };
 
 
 }
@@ -53,14 +64,10 @@ bool TetrisBoard::RotatePiece(RotationOption rotation)
     {
         for(int j = m_piecePos.x; j < m_piecePos.x + n; j++)
         {
-            try
-            {
+
                 //Try to populate array with m_board
-                arr[i-m_piecePos.y][j-m_piecePos.x] = m_board[i].at(j) != 1 ? m_board[i][j] : 0;
-            }catch(std::out_of_range& e)
-            {
-                return false;
-            }
+                arr[i-m_piecePos.y][j-m_piecePos.x] = (m_board[i][j] != 1 && m_board[i][j] < 6) ? m_board[i][j] : 0;
+
         }
     }
 
@@ -77,7 +84,7 @@ bool TetrisBoard::RotatePiece(RotationOption rotation)
     {
         for(int j = m_piecePos.x; j < m_piecePos.x + n; j++)
         {
-            if(rotatedArr[i-m_piecePos.y][j-m_piecePos.x] - 1 == m_board[i][j])
+            if(rotatedArr[i - m_piecePos.y][j - m_piecePos.x] == 2 && (m_board[i][j] == 1 || m_board[i][j] > 5))
             {
                 return false;
             }
@@ -89,11 +96,10 @@ bool TetrisBoard::RotatePiece(RotationOption rotation)
     {
         for(int j = m_piecePos.x; j < m_piecePos.x + n; j++)
         {
-            m_board[i][j] = m_board[i][j] == 1 ? 1 : rotatedArr[i-m_piecePos.y][j-m_piecePos.x];
+            m_board[i][j] = (m_board[i][j] == 1 || m_board[i][j] > 5) ? m_board[i][j] : rotatedArr[i-m_piecePos.y][j-m_piecePos.x];
         }
 
     }
-
     return true;
 }
 
@@ -181,7 +187,7 @@ bool TetrisBoard::WillCollide(MovementOption direction)
     }
     for(auto& coord : pieceCoords)
     {
-        if(m_board[coord.y + movingDown][coord.x+direction] == 1)
+        if(m_board[coord.y + movingDown][coord.x+direction] == 1 || m_board[coord.y + movingDown][coord.x+direction] > 5)
         {
             return true;
         }
@@ -199,14 +205,10 @@ void TetrisBoard::SetPiece()
         {
             if(m_board[y][x] == 2)
             {
-                m_board[y][x] = 1;
+                //We increment by six because movement uses ints up to 5
+                m_board[y][x] = p_currentPiece->GetType() + 6;
 
-                sf::RectangleShape rect(sf::Vector2f(System::PIECE_SIZE, System::PIECE_SIZE));
-                rect.setPosition(System::PIECE_SIZE * x + System::X_OFFSET, System::PIECE_SIZE * (y-1) + System::Y_OFFSET - System::PIECE_SIZE/2);
-                rect.setOutlineColor(sf::Color::Black);
-                rect.setOutlineThickness(1);
-                rect.setFillColor(System::ColorPiece(p_currentPiece->GetType()));
-                m_vRect.push_back(rect);
+                AddRect(p_currentPiece->GetType(), sf::Vector2i(x,y));
 
 
             }
@@ -215,6 +217,16 @@ void TetrisBoard::SetPiece()
     ResetPiece();
 
 
+}
+
+void TetrisBoard::AddRect(PieceType type, sf::Vector2i pos)
+{
+    sf::RectangleShape rect(sf::Vector2f(System::PIECE_SIZE, System::PIECE_SIZE));
+    rect.setPosition(System::PIECE_SIZE * pos.x + System::X_OFFSET, System::PIECE_SIZE * (pos.y-1) + System::Y_OFFSET - System::PIECE_SIZE/2);
+    rect.setOutlineColor(sf::Color::Black);
+    rect.setOutlineThickness(1);
+    rect.setFillColor(System::ColorPiece(type));
+    m_vRect.push_back(rect);
 }
 
 void TetrisBoard::ResetPiece()
@@ -230,10 +242,9 @@ std::vector<int> TetrisBoard::CheckLines()
         bool lineComplete = true;
         for(int x = 1; x < m_board[0].size()-1; x++)
         {
-            if(m_board[y][x] != 1)
+            if(m_board[y][x] != 1 && m_board[y][x] < 6)
             {
                 lineComplete = false;
-
             }
         }
         if(lineComplete)
@@ -250,39 +261,11 @@ std::vector<int> TetrisBoard::CheckLines()
 
 void TetrisBoard::ClearLine(const int line)
 {
-    std::cout<<"Clearing line " <<line <<"\n";
-    for(int i = 1; i < m_board[0].size()-1; i++)
-    {
-        m_board[line][i] = 0;
-    }
-    for(int y = 0; y <= line; y++)
-    {
-        for(int x = 1; x < m_board[0].size()-1; x++)
-        {
-            //only affect collision pieces
-            if(m_board[y][x] < 1) continue;
-            //if board is the piece and has not been affected (2), move the piece num down in the board and set it as affected (3)
-            if(m_board[y][x] == 1)
-            {
-                m_board[y+1][x] += 3;
-                m_board[y][x] = 0;
-            }
-            //if board is the piece and has been affected (3), set it to not affected (2) and continue.
-            //This prevents an infinite loop of m_board[y+1][x] always being moved down
-            if(m_board[y][x] == 3)
-            {
-                m_board[y][x] = 1;
-            }
-            //if board is the piece and has been affected and needs to move down again, increment the next one down
-            //and set it equal to not affected. This occurs when a piecenum that needs to move down moves onto another piecenum
-            if(m_board[y][x] == 4)
-            {
-                m_board[y+1][x] += 3;
-                m_board[y][x] = 1;
-            }
-        }
-    }
+    //Possible bug in the future
+    std::vector<int> emptyLine = m_board[0];
 
+    m_board.erase(m_board.begin() + line);
+    m_board.insert(m_board.begin(), emptyLine);
 
 
     for(int i = 0; i < m_vRect.size(); i++)
@@ -336,7 +319,7 @@ const sf::Vector2i & TetrisBoard::GetPiecePos() const
     return m_piecePos;
 }
 
-const array<array<uint8_t, 12>, 21> & TetrisBoard::GetBoard() const
+const Board & TetrisBoard::GetBoard() const
 {
     return m_board;
 }
@@ -346,7 +329,7 @@ void TetrisBoard::SetCurrentPieceType(PieceType type)
     m_currentType = type;
 }
 
-array<uint8_t, 12>& TetrisBoard::operator[](size_t index)
+std::vector<int>& TetrisBoard::operator[](size_t index)
 {
     return m_board[index];
 }

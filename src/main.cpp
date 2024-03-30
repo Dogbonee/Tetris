@@ -1,4 +1,4 @@
-#include "StateMachine.hpp"
+#include "StateMachine.h"
 #include <Windows.h>
 int main()
 {
@@ -6,8 +6,7 @@ int main()
     GlobalResources::LoadResources();
     StateMachine sm;
 
-    sm.AddState(MENU);
-    sm.AddState(GAME);
+    sm.AddState();
     sm.SwitchState(MENU);
     sm.Run();
     return 0;
