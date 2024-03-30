@@ -100,7 +100,6 @@ bool TetrisBoard::RotatePiece(RotationOption rotation)
         }
 
     }
-    PrintBoard();
     return true;
 }
 
@@ -262,8 +261,6 @@ std::vector<int> TetrisBoard::CheckLines()
 
 void TetrisBoard::ClearLine(const int line)
 {
-    std::cout<<"Clearing line " <<line <<"\n";
-
     //Possible bug in the future
     std::vector<int> emptyLine = m_board[0];
 

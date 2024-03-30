@@ -6,6 +6,7 @@
 #define DAILYGAME_H
 #define SECONDS_PER_DAY 86400
 #define MST_OFFSET 18
+//#define DEBUG
 #include "Game.h"
 #include <fstream>
 
@@ -32,6 +33,9 @@ class DailyGame : public Game{
     void Render() override;
     void DropPiece() override;
     void ConfirmPiece();
+
+
+    void DEBUG_ForcePieceDrop();
 
 public:
     DailyGame(StateMachine &sm, sf::RenderWindow &window);

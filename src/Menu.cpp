@@ -10,7 +10,6 @@ Menu::Menu(StateMachine &sm, sf::RenderWindow &window) : State(sm, window),
                                                          m_standardButton(sf::Vector2f(300, 175), "Play Standard"),
                                                          m_dailyButton(sf::Vector2f(300, 175), "Play Daily")
 {
-    std::cout << "Menu!\n";
     m_titleLabel.setFont(GlobalResources::BlockFont);
     m_titleLabel.setCharacterSize(140);
     m_titleLabel.setFillColor(sf::Color::White);

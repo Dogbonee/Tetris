@@ -13,8 +13,11 @@ DailyGame::DailyGame(StateMachine &sm, sf::RenderWindow &window) : Game(sm, wind
     file.open("../save.tetr");
 
     std::string dateBuf;
+    std::string scoreBuf;
     std::getline(file, dateBuf);
-    std::cout<<dateBuf<<"\n";
+    std::getline(file, scoreBuf);
+    std::cout<<"Time: " << dateBuf << "  Score: "<< scoreBuf << "\n";
+
 
     LoadBoard(file);
 
@@ -23,13 +26,15 @@ DailyGame::DailyGame(StateMachine &sm, sf::RenderWindow &window) : Game(sm, wind
     try
     {
         m_nextTime = std::stoi(dateBuf);
-
+        m_score = std::stoi(scoreBuf);
     }catch (std::exception& e)
     {
-        std::cout<<"Could not load time\n";
+        std::cout<<"Save file has been corrupted or does not exist\n";
         m_nextTime = 0;
+        m_score = 0;
     }
 
+    setScore();
 
 
     m_defaultTickLength = 1000000;
@@ -38,7 +43,6 @@ DailyGame::DailyGame(StateMachine &sm, sf::RenderWindow &window) : Game(sm, wind
 
     m_dailyText.setFont(GlobalResources::BlockFont);
     m_dailyText.setCharacterSize(100);
-
     m_dailyText.setPosition(System::WIDTH/2, System::HEIGHT/2);
 
     HandleTimeText();
@@ -63,7 +67,7 @@ void DailyGame::LoadBoard(std::ifstream& file)
     int i = 0;
     for(std::string buf; std::getline(file, buf); i++)
     {
-        if(i == 0 || buf.empty())continue;
+        if(buf.size() < m_board[0].size())continue;
         for(int j = 0; j < buf.size(); j++)
         {
             m_board[i][j] = hexToInt(buf[j]);
@@ -72,8 +76,8 @@ void DailyGame::LoadBoard(std::ifstream& file)
                 m_board.AddRect(static_cast<PieceType>(m_board[i][j] - 6), sf::Vector2i(j,i));
             }
         }
+
     }
-    m_board.PrintBoard();
     SpawnPiece(static_cast<PieceType>(std::rand() % 7));
     ManageGhostPiece();
 }
@@ -151,11 +155,18 @@ void DailyGame::Render()
 
 void DailyGame::DropPiece()
 {
+    #ifdef DEBUG
+        DEBUG_ForcePieceDrop();
+        return;
+    #endif
+
     if(!m_hasPlaced)
     {
         Game::DropPiece();
         ConfirmPiece();
     }
+
+
 }
 
 void DailyGame::ConfirmPiece()
@@ -166,6 +177,7 @@ void DailyGame::ConfirmPiece()
     m_nextTime = secondsTmmr - secondsTmmr % SECONDS_PER_DAY;
     HandleTimeText();
     file << m_nextTime << '\n';
+    file << m_score << '\n';
 
     for(int i = 0; i < System::BOARD_HEIGHT; i++)
     {
@@ -182,4 +194,9 @@ void DailyGame::ConfirmPiece()
     }
 
     file.close();
+}
+
+void DailyGame::DEBUG_ForcePieceDrop() {
+    Game::DropPiece();
+    ConfirmPiece();
 }

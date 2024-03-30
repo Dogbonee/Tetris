@@ -40,7 +40,7 @@ void StateMachine::UpdateState()
 void StateMachine::Run()
 {
     std::cout<<"Game setup successful. Running...\n";
-    m_window.setVerticalSyncEnabled(true);
+    m_window.setFramerateLimit(60);
     while(m_window.isOpen())
     {
         UpdateState();

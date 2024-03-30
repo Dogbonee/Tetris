@@ -145,7 +145,7 @@ void Game::SpawnPiece(PieceType type)
     {
         for(int x = 0; x < pieceSize; x++)
         {
-            if(m_board[y][5+x] == 1)
+            if(m_board[y][5+x] > 5)
             {
                 GameOver();
             }
@@ -167,7 +167,7 @@ void Game::ManageGameClock()
     {
         Tick();
         tickTimeRemaining = m_tickLength;
-        m_fpsCounter.setString("FPS: " + std::to_string(static_cast<int>(round(1000000/m_clock.restart().asMicroseconds()))));
+        m_fpsCounter.setString("FPS: " + std::to_string(static_cast<int>(round(1/m_clock.restart().asSeconds()))));
     }
 }
 
