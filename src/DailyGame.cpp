@@ -6,9 +6,12 @@
 
 #include <chrono>
 
+//This class should be improved. The game gets the time and compares it to the time stored in a file
+//If a file does not exist, it uses default values. If the current time - saved time is less than one day,
+//The player is not allowed to use a piece. When the piece hits the bottom, the file is saved and the current
+//time is saved to file. Otherwise, the tetris game plays like a normal game.
 DailyGame::DailyGame(StateMachine &sm, sf::RenderWindow &window) : Game(sm, window)
 {
-
     std::ifstream file;
     file.open("../save.tetr");
 
@@ -46,10 +49,10 @@ DailyGame::DailyGame(StateMachine &sm, sf::RenderWindow &window) : Game(sm, wind
         m_nextTime = 0;
         m_score = 0;
     }
-
+    //set score to the loaded score
     setScore();
 
-
+    //Since the game is daily, the game should never tick unless the player hits the down arrow
     m_defaultTickLength = 1000000;
     m_tickLength = m_defaultTickLength;
     m_speedTickLength = 0.1f;
@@ -99,6 +102,7 @@ void DailyGame::HandleTimeText()
 
 void DailyGame::LoadBoard(std::ifstream& file)
 {
+    //Convert board hex values to decimal and populate the board with them
     int i = 0;
     for(std::string buf; std::getline(file, buf); i++)
     {
@@ -205,6 +209,7 @@ void DailyGame::DropPiece()
 
 void DailyGame::ConfirmPiece()
 {
+    //Save the necessary values to file and lock out player
     std::ofstream file("../save.tetr");
     m_hasPlaced = true;
     time_t secondsTmmr = (std::time(nullptr) + SECONDS_PER_DAY);

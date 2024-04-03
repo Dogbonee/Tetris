@@ -50,10 +50,7 @@ void Menu::Render()
 
 void Menu::HandleKeyboardInput(sf::Keyboard::Key keyCode)
 {
-    if(keyCode == sf::Keyboard::Enter)
-    {
-        p_stateMachine->SwitchState(GAME);
-    }
+
 }
 
 void Menu::HandleEvents()
