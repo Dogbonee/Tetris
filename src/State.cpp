@@ -16,11 +16,11 @@ void State::HandleEvents()
         {
             case sf::Event::Closed:
                 p_window->close();
-            break;
+                break;
             case sf::Event::KeyPressed:
                 //Key repeat enabled
-                    HandleKeyboardInput(event.key.code);
-            break;
+                HandleKeyboardInput(event.key.code);
+                break;
 
         }
     }

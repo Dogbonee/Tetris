@@ -13,9 +13,6 @@
 StateMachine::StateMachine() :m_window {sf::VideoMode(System::WIDTH, System::HEIGHT), "Tetris", sf::Style::Close}
 {
     std::cout<<"Starting state machine\n";
-
-
-    //
 }
 
 StateMachine::~StateMachine()
@@ -24,12 +21,13 @@ StateMachine::~StateMachine()
     {
         delete state;
     }
-    m_states.clear();
 }
 
 
 void StateMachine::UpdateState()
 {
+    //Only updates one state at any given point: the current state selected. Rendering and
+    //Event handling are each handled separately by each state, not in the state machine.
     if(p_currentState != nullptr)
     {
         p_currentState->Update();
@@ -49,6 +47,7 @@ void StateMachine::Run()
 
 void StateMachine::AddState()
 {
+    //All possible states should be added here
     Menu* menu = new Menu(*this, m_window);
     m_states.emplace_back(menu);
     Game* game = new Game(*this, m_window);
@@ -59,6 +58,7 @@ void StateMachine::AddState()
 
 void StateMachine::SwitchState(StateName state)
 {
+    //get a pointer to the selected state and set it as the current state
     std::cout<<"Switching to state " << state << "\n";
     p_currentState = m_states[state];
 }

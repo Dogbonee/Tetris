@@ -19,7 +19,8 @@ TetrisBoard::TetrisBoard(Piece* pCurrentPiece) : m_piecePos(5,0), p_currentPiece
     m_frame.setOrigin(m_frame.getSize().x/2, m_frame.getSize().y/2);
     m_frame.setPosition(System::WIDTH/2, System::HEIGHT/2);
 
-
+    //Might be able to clean this up with a for loop but I'm too lazy to worry about
+    //that right now. Maybe a kind soul will come in clutch with a PR :D
     m_board = {
             {1,0,0,0,0,0,0,0,0,0,0,1},
             {1,0,0,0,0,0,0,0,0,0,0,1},
@@ -47,31 +48,35 @@ TetrisBoard::TetrisBoard(Piece* pCurrentPiece) : m_piecePos(5,0), p_currentPiece
 
 }
 
-//TODO: change rotation algorithm to one with O(1) extra space
+
+//Rotates current piece (array only)
 bool TetrisBoard::RotatePiece(RotationOption rotation)
 {
-    //So much better than last algorithm i.e actually works (most of the time) still has some bugs later in the game so we need to check that
+    //TODO: change rotation algorithm to one with O(1) extra space
+
+    //Rotating the O_BLOCK feels wrong, so don't do it
     if(m_currentType == O_BLOCK)return false;
 
+    //Get size of piece array
     int n = 3 + (m_currentType == I_BLOCK);
 
+    //create arrays to store original and rotated versions of the pieces
     int arr[4][4];
     int rotatedArr[4][4];
 
     //Hack to avoid sigsegv when rotating i piece at border
+    //Maybe unneccessary at this point but I don't want to test
     if(m_currentType == I_BLOCK && m_piecePos.x > 7) return false;
     for(int i = m_piecePos.y; i < m_piecePos.y + n; i++)
     {
         for(int j = m_piecePos.x; j < m_piecePos.x + n; j++)
         {
-
                 //Try to populate array with m_board
                 arr[i-m_piecePos.y][j-m_piecePos.x] = (m_board[i][j] != 1 && m_board[i][j] < 6) ? m_board[i][j] : 0;
-
         }
     }
 
-
+    //Rotate array
     for(int i = 0; i < n; i++)
     {
         for(int j = 0; j < n; j++)
@@ -80,6 +85,8 @@ bool TetrisBoard::RotatePiece(RotationOption rotation)
         }
     }
 
+    //Check for collision; for every part of piece (2) in rotated array, check if
+    //the board at that spot is filled. If it is, return false.
     for(int i = m_piecePos.y; i < m_piecePos.y + n; i++)
     {
         for(int j = m_piecePos.x; j < m_piecePos.x + n; j++)
@@ -91,7 +98,8 @@ bool TetrisBoard::RotatePiece(RotationOption rotation)
         }
     }
 
-
+    //At this point we know the piece is good to rotate, so insert the rotated array
+    //into the board (only the filled parts of the array)
     for(int i = m_piecePos.y; i < m_piecePos.y + n; i++)
     {
         for(int j = m_piecePos.x; j < m_piecePos.x + n; j++)
@@ -103,6 +111,7 @@ bool TetrisBoard::RotatePiece(RotationOption rotation)
     return true;
 }
 
+//Drops the current piece one block down
 void TetrisBoard::FallPiece()
 {
     for(int y = 0; y < m_board.size(); y++)
@@ -135,6 +144,7 @@ void TetrisBoard::FallPiece()
     m_piecePos.y++;
 }
 
+//Moves the current piece in the specified direction
 void TetrisBoard::MovePiece(MovementOption direction)
 {
     for(int y = 0; y < m_board.size(); y++)
@@ -171,6 +181,8 @@ void TetrisBoard::MovePiece(MovementOption direction)
     m_piecePos.x += direction;
 }
 
+//Check if moving the piece in the given direction will cause a collision
+//Returns true if moving the piece will cause a collision
 bool TetrisBoard::WillCollide(MovementOption direction)
 {
     uint8_t movingDown = direction == 0;
@@ -196,6 +208,7 @@ bool TetrisBoard::WillCollide(MovementOption direction)
     return false;
 }
 
+//Completes the current piece's journey and makes it part of the board.
 void TetrisBoard::SetPiece()
 {
     std::vector<sf::Vector2i> pieceCoords;
@@ -215,10 +228,9 @@ void TetrisBoard::SetPiece()
         }
     }
     ResetPiece();
-
-
 }
 
+//Adds a visual rect (Not a piece) at the given position in board coordinates.
 void TetrisBoard::AddRect(PieceType type, sf::Vector2i pos)
 {
     sf::RectangleShape rect(sf::Vector2f(System::PIECE_SIZE, System::PIECE_SIZE));
@@ -229,11 +241,14 @@ void TetrisBoard::AddRect(PieceType type, sf::Vector2i pos)
     m_vRect.push_back(rect);
 }
 
+//Sets the current piece position to the starting position
 void TetrisBoard::ResetPiece()
 {
     m_piecePos = sf::Vector2i(5,0);
 }
 
+//Scans the board and looks for completed lines.
+//Returns a vector of y positions in board coordinates of all the completed lines found.
 std::vector<int> TetrisBoard::CheckLines()
 {
     std::vector<int> completedLines;
@@ -259,15 +274,20 @@ std::vector<int> TetrisBoard::CheckLines()
     return completedLines;
 }
 
+//Clear a line at the specified board position and shift everything upwards down
 void TetrisBoard::ClearLine(const int line)
 {
     //Possible bug in the future
     std::vector<int> emptyLine = m_board[0];
 
+    //Rather than modifying the array in place, its easier to just trashcan the entire
+    //line and add a new line at the beginning of m_board. The other lines are automatically
+    //moved down for us by the erase function (yay)
     m_board.erase(m_board.begin() + line);
     m_board.insert(m_board.begin(), emptyLine);
 
 
+    //Clear all visual rects in the line
     for(int i = 0; i < m_vRect.size(); i++)
     {
         if(m_vRect[i].getPosition().y == (line - 1) * System::PIECE_SIZE + System::Y_OFFSET - System::PIECE_SIZE/2)
@@ -276,6 +296,7 @@ void TetrisBoard::ClearLine(const int line)
             i--;
         }
     }
+    //Move visual rects down
     for(auto& rect : m_vRect)
     {
         if(rect.getPosition().y < (line - 1) * System::PIECE_SIZE + System::Y_OFFSET - System::PIECE_SIZE/2)

@@ -42,7 +42,7 @@ Game::Game(StateMachine &sm, sf::RenderWindow &window) : State(sm, window),
     m_fpsCounter.setPosition(20,20);
     m_fpsCounter.setCharacterSize(30);
 
-    //Init all ui before this point
+    //Init all ui before this point, because now we're running game functions
     std::srand(std::time(nullptr));
     SpawnPiece(static_cast<PieceType>(std::rand() % 7));
     m_ghostPiece = m_currentPiece;
@@ -115,6 +115,7 @@ void Game::HandleKeyboardInput(sf::Keyboard::Key keyCode)
 void Game::Update()
 {
     //should handle in other function in future
+    //If the down arrow is pressed, the tick length should be way less
     m_tickLength = sf::Keyboard::isKeyPressed(sf::Keyboard::Down) ? m_speedTickLength : m_defaultTickLength;
     HandleEvents();
     ManageGameClock();
@@ -128,12 +129,14 @@ void Game::Run()
 
 void Game::setScore()
 {
+    //Set scoreText string and reposition it
     m_scoreText.setString(std::to_string(m_score));
-    sf::FloatRect textRect = m_scoreText.getLocalBounds();
-    m_scoreText.setOrigin(textRect.left + textRect.width/2, textRect.top + textRect.height/2);
+    m_scoreText.setOrigin(System::CenterTextOrigin(m_scoreText));
     m_scoreText.setPosition(120,200);
 }
 
+//Add a new piece to the array
+//Note: This ideally would be handled in TetrisBoard and should be done in the near future.
 void Game::SpawnPiece(PieceType type)
 {
     Piece piece(type);
@@ -157,7 +160,6 @@ void Game::SpawnPiece(PieceType type)
 }
 
 
-
 void Game::ManageGameClock()
 {
     static float tickTimeRemaining = m_tickLength;
@@ -171,9 +173,10 @@ void Game::ManageGameClock()
     }
 }
 
+//Moves piece down if it can, otherwise set the piece
+//Returns whether piece can tick again without colliding
 bool Game::Tick()
 {
-    //Returns whether piece can tick again without colliding
     //Check collision
     if(!m_board.WillCollide(MOVE_DOWN))
     {
@@ -184,7 +187,6 @@ bool Game::Tick()
 
     m_board.SetPiece();
     HandleScoring();
-    //m_board.PrintBoard();
     SpawnPiece(m_nextPiece.GetType());
     HandleNextPiece();
     ManageGhostPiece();
@@ -193,6 +195,7 @@ bool Game::Tick()
     return false;
 }
 
+//Moves the array, visual, and ghost pieces all at once
 void Game::MovePieceComponents(MovementOption direction)
 {
     m_currentPiece.Move(direction);
@@ -200,6 +203,7 @@ void Game::MovePieceComponents(MovementOption direction)
     ManageGhostPiece();
 }
 
+//Rotates the array, visual, and ghost pieces all at once
 void Game::RotatePieceComponents(RotationOption direction)
 {
     if(m_currentType == O_BLOCK) return;
@@ -210,6 +214,7 @@ void Game::RotatePieceComponents(RotationOption direction)
     }
 }
 
+//Checks and clear lines, and adds to the score based on how many lines were cleared in the tick.
 void Game::HandleScoring()
 {
     std::vector<int> completedLines = m_board.CheckLines();
@@ -252,13 +257,17 @@ void Game::HandleScoring()
     {
         m_defaultTickLength =System::m_levelSixTick;
     }
+    //Speed length needs to shorten every time the default tick length is shortened,
+    //otherwise pressing the down arrow would eventually be slower than the default speed.
     m_speedTickLength = m_defaultTickLength / 10;
     std::cout<<"Score: "<<m_score << " Tick length: " << m_defaultTickLength << '\n';
     setScore();
 }
 
+//Handles the drop of the ghost piece array and visual
 void Game::HandleGhostPiece()
 {
+    //We can simulate a fallen piece by finding the lowest spot that the current piece can go
     while(!m_ghostBoard.WillCollide(MOVE_DOWN))
     {
         m_ghostPiece.Fall();
@@ -266,12 +275,15 @@ void Game::HandleGhostPiece()
     }
 }
 
+//Makes the ghost piece equal to the current piece and reshades
 void Game::ResetGhostPiece()
 {
     m_ghostPiece = m_currentPiece;
     m_ghostPiece.MakeTransparent();
 }
 
+//Handles all the ghost piece functions: resets the ghostboard to the board,
+//resets the ghost piece, and handles the dropping of the ghost piece.
 void Game::ManageGhostPiece()
 {
     m_ghostBoard = m_board;
@@ -279,6 +291,7 @@ void Game::ManageGhostPiece()
     HandleGhostPiece();
 }
 
+//Fetches a new random piece and sets its position to the designated next piece position
 void Game::HandleNextPiece(PieceType type)
 {
     m_nextPiece = {type};
@@ -289,6 +302,7 @@ void Game::HandleNextPiece(PieceType type)
     }
 }
 
+//Holds a piece
 void Game::HoldPiece()
 {
 
@@ -305,7 +319,10 @@ void Game::HoldPiece()
         }
     }
 
+    //Temporary variable
     PieceType currentType = m_currentType;
+    //If there is a current hold piece, switch the current piece out for the hold piece.
+    //Otherwise, simply hold the current piece and spawn a new piece based on the next piece
     SpawnPiece(m_hasHeld ? m_holdPiece.GetType() : m_nextPiece.GetType());
     m_holdPiece = {currentType};
     m_holdPiece.SetPosition(m_holdPiecePosition);
@@ -316,15 +333,19 @@ void Game::HoldPiece()
     m_board.ResetPiece();
     m_ghostBoard.ResetPiece();
     ManageGhostPiece();
+    //Prevents default block from showing in the hold piece if the player has not yet held this game
     m_hasHeld = true;
+    //Prevents multiple holds during a piece
     m_hasHeldThisTurn = true;
 }
 
+//Runs Tick until it returns collision
 void Game::DropPiece()
 {
     while(Tick());
 }
 
+//Set the bool game over to true and set the final score in the game over screen
 void Game::GameOver()
 {
     m_isGameOver = true;

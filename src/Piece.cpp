@@ -76,6 +76,7 @@ void Piece::generatePieceArray(int type)
 
 }
 
+//generates the visual part of the piece that is displayed on screen
 void Piece::generatePieceVisual()
 {
 
@@ -87,6 +88,7 @@ void Piece::generatePieceVisual()
             {
                 sf::RectangleShape rect(sf::Vector2f(System::PIECE_SIZE, System::PIECE_SIZE));
                 //Since the origin is different for every piece, the position needs to be changed depending on the x/y values
+                //Every rect origin should be in the same point (the center of the piece visual)
                 rect.setPosition(System::X_MIDDLE, System::Y_OFFSET);
                 if(m_type != I_BLOCK)
                 {
@@ -123,6 +125,7 @@ void Piece::Move(MovementOption direction)
     }
 }
 
+//Moves the piece visual and level variable down by one
 void Piece::Fall()
 {
     m_level++;
@@ -132,6 +135,7 @@ void Piece::Fall()
     }
 }
 
+//Rotates the visual
 void Piece::RotateVisual(RotationOption direction)
 {
     //only works if the origin is correct
@@ -142,6 +146,7 @@ void Piece::RotateVisual(RotationOption direction)
 
 }
 
+//Makes the piece slightly see through (for ghost piece)
 void Piece::MakeTransparent()
 {
     sf::Color transparentColor = m_pieceVisual[0].getFillColor();
