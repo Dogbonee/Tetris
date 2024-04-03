@@ -14,22 +14,35 @@ DailyGame::DailyGame(StateMachine &sm, sf::RenderWindow &window) : Game(sm, wind
 
     std::string dateBuf;
     std::string scoreBuf;
+    std::string cPieceBuf;
+    std::string nPieceBuf;
+    std::string hPieceBuf;
     std::getline(file, dateBuf);
     std::getline(file, scoreBuf);
+    std::getline(file, cPieceBuf);
+    std::getline(file, nPieceBuf);
+    std::getline(file, hPieceBuf);
     std::cout<<"Time: " << dateBuf << "  Score: "<< scoreBuf << "\n";
 
 
-    LoadBoard(file);
 
-    file.close();
-
+    int loadedPiece = 0;
+    int nextPiece = 0;
+    int holdPiece = 0;
     try
     {
         m_nextTime = std::stoi(dateBuf);
         m_score = std::stoi(scoreBuf);
+        loadedPiece = std::stoi(cPieceBuf);
+        nextPiece = std::stoi(nPieceBuf);
+        holdPiece = std::stoi(hPieceBuf);
+
     }catch (std::exception& e)
     {
         std::cout<<"Save file has been corrupted or does not exist\n";
+        loadedPiece = static_cast<PieceType>(std::rand() % 7);
+        nextPiece = static_cast<PieceType>(std::rand() % 7);
+        holdPiece = -1;
         m_nextTime = 0;
         m_score = 0;
     }
@@ -48,6 +61,28 @@ DailyGame::DailyGame(StateMachine &sm, sf::RenderWindow &window) : Game(sm, wind
     HandleTimeText();
 
     m_hasPlaced = std::time(nullptr) < m_nextTime;
+
+    LoadBoard(file);
+
+    file.close();
+
+    SpawnPiece(static_cast<PieceType>(loadedPiece));
+    HandleNextPiece(static_cast<PieceType>(nextPiece));
+
+    //This is all one big hack.
+    m_hasHeld = holdPiece >= 0;
+    if(m_hasHeld)
+    {
+        m_holdPiece = {static_cast<PieceType>(holdPiece)};
+        m_holdPiece.SetPosition(m_holdPiecePosition);
+
+        if(m_holdPiece.GetType() == I_BLOCK || m_holdPiece.GetType() == O_BLOCK)
+        {
+            m_holdPiece.SetPosition(sf::Vector2f(m_holdPiecePosition.x, m_holdPiecePosition.y + System::PIECE_SIZE));
+        }
+    }
+
+    ManageGhostPiece();
 }
 
 void DailyGame::HandleTimeText()
@@ -78,8 +113,7 @@ void DailyGame::LoadBoard(std::ifstream& file)
         }
 
     }
-    SpawnPiece(static_cast<PieceType>(std::rand() % 7));
-    ManageGhostPiece();
+
 }
 
 char DailyGame::intToHex(int num)
@@ -178,6 +212,11 @@ void DailyGame::ConfirmPiece()
     HandleTimeText();
     file << m_nextTime << '\n';
     file << m_score << '\n';
+    file << m_currentPiece.GetType() << '\n';
+    file << m_nextPiece.GetType() << '\n';
+    if(m_hasHeld) file << m_holdPiece.GetType() << '\n';
+    else file << -1 << '\n';
+
 
     for(int i = 0; i < System::BOARD_HEIGHT; i++)
     {

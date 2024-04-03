@@ -82,7 +82,7 @@ protected:
     void HandleGhostPiece();
     void ResetGhostPiece();
     void ManageGhostPiece();
-    void HandleNextPiece();
+    void HandleNextPiece(PieceType type = static_cast<PieceType>(std::rand() % 7));
     void HoldPiece();
     virtual void DropPiece();
     void GameOver();

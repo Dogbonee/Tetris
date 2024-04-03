@@ -279,9 +279,9 @@ void Game::ManageGhostPiece()
     HandleGhostPiece();
 }
 
-void Game::HandleNextPiece()
+void Game::HandleNextPiece(PieceType type)
 {
-    m_nextPiece = {static_cast<PieceType>(std::rand() % 7)};
+    m_nextPiece = {type};
     m_nextPiece.SetPosition(m_nextPiecePosition);
     if(m_nextPiece.GetType() == I_BLOCK || m_nextPiece.GetType() == O_BLOCK)
     {
