@@ -18,8 +18,8 @@ class DailyGame : public Game{
     bool m_hasPlaced;
 
 
-
-    unsigned long m_nextTime;
+    unsigned long m_currentTime;
+    unsigned long m_previousTime;
     unsigned int m_timeLeft;
 
     void HandleTimeText();
