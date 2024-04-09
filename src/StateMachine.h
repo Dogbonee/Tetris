@@ -7,6 +7,7 @@
 #include "State.h"
 #include "Game.h"
 #include <vector>
+#include <SFML/Audio.hpp>
 
 
 enum StateName : int{
@@ -26,6 +27,9 @@ class StateMachine {
     sf::RenderWindow m_window;
     sf::Clock m_clock;
     void UpdateState();
+
+
+
 
 public:
     StateMachine();

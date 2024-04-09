@@ -4,11 +4,15 @@
 
 #ifndef RESOURCELOADER_H
 #define RESOURCELOADER_H
+#include <SFML/Audio.hpp>
+
 #include "System.h"
 
 namespace GlobalResources {
     inline sf::Font BlockFont;
-
+    inline sf::Music GameMusic;
+    inline sf::SoundBuffer TickBuffer;
+    inline sf::SoundBuffer ClearBuffer;
     void LoadResources();
 }
 

@@ -20,4 +20,20 @@ void GlobalResources::LoadResources()
             exit(1);
         }
     }
+
+    if(!GameMusic.openFromFile("../res/Adventure.mp3"))
+    {
+        exit(1);
+    }
+
+    if(!TickBuffer.loadFromFile("../res/Tick.wav"))
+    {
+        exit(1);
+    }
+    if(!ClearBuffer.loadFromFile("../res/ClearLine.mp3"))
+    {
+        exit(1);
+    }
+
+
 }

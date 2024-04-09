@@ -31,5 +31,5 @@ set(SFML_STATIC_LIBRARIES true)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
-find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE sfml-system sfml-network sfml-graphics sfml-window)
+find_package(SFML COMPONENTS system window graphics audio CONFIG REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE sfml-system sfml-network sfml-graphics sfml-window sfml-audio)

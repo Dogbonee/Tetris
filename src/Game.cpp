@@ -42,6 +42,11 @@ Game::Game(StateMachine &sm, sf::RenderWindow &window) : State(sm, window),
     m_fpsCounter.setPosition(20,20);
     m_fpsCounter.setCharacterSize(30);
 
+    m_placeSound.setBuffer(GlobalResources::TickBuffer);
+    m_placeSound.setVolume(70);
+    m_clearSound.setBuffer(GlobalResources::ClearBuffer);
+
+
     //Init all ui before this point, because now we're running game functions
     std::srand(std::time(nullptr));
     SpawnPiece(static_cast<PieceType>(std::rand() % 7));
@@ -177,6 +182,7 @@ void Game::ManageGameClock()
 //Returns whether piece can tick again without colliding
 bool Game::Tick()
 {
+    if(m_isGameOver)return false;
     //Check collision
     if(!m_board.WillCollide(MOVE_DOWN))
     {
@@ -219,6 +225,7 @@ void Game::HandleScoring()
 {
     std::vector<int> completedLines = m_board.CheckLines();
     if(completedLines.size() == 0)return;
+    m_clearSound.play();
     int earnedScore = 0;
     switch(completedLines.size())
     {
@@ -342,12 +349,15 @@ void Game::HoldPiece()
 //Runs Tick until it returns collision
 void Game::DropPiece()
 {
+    if(m_isGameOver)return;
     while(Tick());
+    m_placeSound.play();
 }
 
 //Set the bool game over to true and set the final score in the game over screen
 void Game::GameOver()
 {
+
     m_isGameOver = true;
     m_gameOverScreen.SetGameOverScore(m_score);
 }
