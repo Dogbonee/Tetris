@@ -17,10 +17,6 @@ Game::Game(StateMachine &sm, sf::RenderWindow &window) : State(sm, window),
                                                          m_nextPiecePosition(650, 100), m_holdPiecePosition(650, 250),
                                                          m_hasHeld(false), m_hasHeldThisTurn(false), m_isGameOver(false), m_score(0)
 {
-    if (!GlobalResources::BlockFont.loadFromFile("../res/Pixeboy.ttf"))
-    {
-        std::cout << "Font could not be loaded!\n";
-    }
 
     m_scoreLabel.setFont(GlobalResources::BlockFont);
     m_scoreLabel.setCharacterSize(60);

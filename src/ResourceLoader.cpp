@@ -13,10 +13,8 @@ void GlobalResources::LoadResources()
     //Load all resource files necessary
     if(!BlockFont.loadFromFile("../res/Pixeboy.ttf"))
     {
-        std::cout<<"Could not load default font. Attempting to load fallback font\n";
-        if(!BlockFont.loadFromFile("C:/Windows/Fonts/Ariel.ttf"))
+        if(!BlockFont.loadFromFile("./res/Pixeboy.ttf"))
         {
-            std::cout<<"Could not load fallback font. Exiting...\n";
             exit(1);
         }
     }
