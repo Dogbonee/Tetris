@@ -26,6 +26,8 @@ public:
     void ButtonUpdate(sf::Vector2i mousePos);
     void Activate();
 
+    void setTextSize(unsigned int size);
+
     std::function<void()> callback;
 
 };

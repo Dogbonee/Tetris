@@ -15,6 +15,8 @@
 #include <cmath>
 #include <iostream>
 
+#include "Button.h"
+
 class Game : public State{
 
 
@@ -22,6 +24,7 @@ class Game : public State{
 
 protected:
     void Render() override;
+    void HandleEvents() override;
     void HandleKeyboardInput(sf::Keyboard::Key keyCode) override;
     void Update() override;
 
@@ -66,9 +69,11 @@ protected:
     sf::Text m_nextLabel;
     sf::Text m_holdLabel;
 
-
     sf::Sound m_placeSound;
     sf::Sound m_clearSound;
+
+    Button m_menuButton;
+
 
     void setScore();
 

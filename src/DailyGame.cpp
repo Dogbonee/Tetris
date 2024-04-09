@@ -208,6 +208,8 @@ void DailyGame::Render()
     {
         p_window->draw(m_dailyText);
     }
+    p_window->draw(m_menuButton);
+
     p_window->display();
 }
 

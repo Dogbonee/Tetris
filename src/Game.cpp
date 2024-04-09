@@ -4,20 +4,22 @@
 
 #include "Game.h"
 
+#include "StateMachine.h"
 
 
 Game::Game(StateMachine &sm, sf::RenderWindow &window) : State(sm, window),
                                                          m_tickLength(m_defaultTickLength),
                                                          m_defaultTickLength(System::m_levelOneTick),
-                                                         m_speedTickLength(m_defaultTickLength / 10), m_board(&m_currentPiece),
+                                                         m_speedTickLength(m_defaultTickLength / 10),
+                                                         m_board(&m_currentPiece),
                                                          m_ghostBoard(&m_ghostPiece), m_currentPiece(O_BLOCK),
                                                          m_nextPiece(O_BLOCK),
                                                          m_holdPiece(O_BLOCK),
                                                          m_ghostPiece(m_currentPiece),
                                                          m_nextPiecePosition(650, 100), m_holdPiecePosition(650, 250),
-                                                         m_hasHeld(false), m_hasHeldThisTurn(false), m_isGameOver(false), m_score(0)
+                                                         m_hasHeld(false), m_hasHeldThisTurn(false),
+                                                         m_isGameOver(false), m_score(0), m_menuButton(sf::Vector2f(150,75), "Menu")
 {
-
     m_scoreLabel.setFont(GlobalResources::BlockFont);
     m_scoreLabel.setCharacterSize(60);
     m_scoreLabel.setPosition(50, 100);
@@ -32,16 +34,27 @@ Game::Game(StateMachine &sm, sf::RenderWindow &window) : State(sm, window),
     m_holdLabel.setString("Hold");
     m_scoreText.setFont(GlobalResources::BlockFont);
     m_scoreText.setCharacterSize(40);
-    setScore();
+
 
     m_fpsCounter.setFont(GlobalResources::BlockFont);
-    m_fpsCounter.setPosition(20,20);
+    m_fpsCounter.setPosition(20, 20);
     m_fpsCounter.setCharacterSize(30);
 
     m_placeSound.setBuffer(GlobalResources::TickBuffer);
     m_placeSound.setVolume(40);
     m_clearSound.setBuffer(GlobalResources::ClearBuffer);
 
+    m_menuButton.setPosition(120, 520);
+    m_menuButton.setColor(sf::Color::Red);
+    m_menuButton.setTextSize(45);
+    m_menuButton.callback = [this]() {
+        p_stateMachine->ResetGame();
+        p_stateMachine->SwitchState(MENU);
+    };
+
+
+
+    setScore();
 
     //Init all ui before this point, because now we're running game functions
     std::srand(std::time(nullptr));
@@ -55,6 +68,7 @@ void Game::Render()
 {
     p_window->clear();
     p_window->draw(m_fpsCounter);
+    p_window->draw(m_menuButton);
     if(m_isGameOver)
     {
         p_window->draw(m_gameOverScreen);
@@ -77,8 +91,37 @@ void Game::Render()
     {
         p_window->draw(m_holdPiece);
     }
+
+
     //DrawPieces(m_window);
     p_window->display();
+}
+
+void Game::HandleEvents()
+{
+    for(sf::Event event{}; p_window->pollEvent(event);)
+    {
+        switch(event.type)
+        {
+            case sf::Event::Closed:
+                p_window->close();
+            break;
+            case sf::Event::KeyPressed:
+                //Key repeat enabled
+                    HandleKeyboardInput(event.key.code);
+            break;
+            case sf::Event::MouseMoved:
+                m_menuButton.ButtonUpdate(sf::Vector2i(event.mouseMove.x, event.mouseMove.y));
+            break;
+            case sf::Event::MouseButtonReleased:
+                if(event.mouseButton.button == sf::Mouse::Left)
+                {
+                    m_menuButton.Activate();
+                }
+
+
+        }
+    }
 }
 
 

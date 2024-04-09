@@ -63,3 +63,9 @@ void Button::Activate()
         callback();
     }
 }
+
+void Button::setTextSize(unsigned int size)
+{
+    m_buttonText.setCharacterSize(size);
+    m_buttonText.setOrigin(System::CenterTextOrigin(m_buttonText));
+}
