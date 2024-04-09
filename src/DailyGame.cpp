@@ -12,6 +12,8 @@
 //time is saved to file. Otherwise, the tetris game plays like a normal game.
 DailyGame::DailyGame(StateMachine &sm, sf::RenderWindow &window) : Game(sm, window)
 {
+    m_currentTime = std::time(nullptr);
+
     std::ifstream file;
     file.open("../save.tetr");
 
@@ -34,7 +36,7 @@ DailyGame::DailyGame(StateMachine &sm, sf::RenderWindow &window) : Game(sm, wind
     int holdPiece = 0;
     try
     {
-        m_nextTime = std::stoi(dateBuf);
+        m_previousTime = std::stoi(dateBuf);
         m_score = std::stoi(scoreBuf);
         loadedPiece = std::stoi(cPieceBuf);
         nextPiece = std::stoi(nPieceBuf);
@@ -46,7 +48,7 @@ DailyGame::DailyGame(StateMachine &sm, sf::RenderWindow &window) : Game(sm, wind
         loadedPiece = static_cast<PieceType>(std::rand() % 7);
         nextPiece = static_cast<PieceType>(std::rand() % 7);
         holdPiece = -1;
-        m_nextTime = 0;
+        m_previousTime = 0;
         m_score = 0;
     }
     //set score to the loaded score
@@ -63,7 +65,7 @@ DailyGame::DailyGame(StateMachine &sm, sf::RenderWindow &window) : Game(sm, wind
 
     HandleTimeText();
 
-    m_hasPlaced = std::time(nullptr) < m_nextTime;
+    m_hasPlaced = m_currentTime < m_previousTime;
 
     LoadBoard(file);
 
@@ -85,12 +87,30 @@ DailyGame::DailyGame(StateMachine &sm, sf::RenderWindow &window) : Game(sm, wind
         }
     }
 
+    //Determine how many days its been since the player placed a piece
+    int unplacedDays = (m_currentTime > m_previousTime) * (m_previousTime != 0 ? (m_currentTime - m_previousTime) / SECONDS_PER_DAY : 0);
+    std::cout<<unplacedDays<<" Days since last piece dropped\n";
+
+    //Drop pieces according to the number of days missed
+    for(int i = 0; i < unplacedDays; i++)
+    {
+        Game::DropPiece();
+    }
+    //Save the pieces immediately after so the player can't exit and get new pieces
+    if(unplacedDays)
+    {
+        ConfirmPiece();
+        m_hasPlaced = false;
+    }
+
+
+
     ManageGhostPiece();
 }
 
 void DailyGame::HandleTimeText()
 {
-    long difference = m_nextTime - std::time(nullptr);
+    long difference = m_previousTime - m_currentTime;
     long hoursLeft = difference / 3600 - MST_OFFSET;
     //Handle 24 hour wrap around
     hoursLeft = hoursLeft < 0 ? 24 + hoursLeft : hoursLeft;
@@ -212,10 +232,10 @@ void DailyGame::ConfirmPiece()
     //Save the necessary values to file and lock out player
     std::ofstream file("../save.tetr");
     m_hasPlaced = true;
-    time_t secondsTmmr = (std::time(nullptr) + SECONDS_PER_DAY);
-    m_nextTime = secondsTmmr - secondsTmmr % SECONDS_PER_DAY;
+    time_t secondsTmmr = (m_currentTime + SECONDS_PER_DAY);
+    m_previousTime = secondsTmmr - secondsTmmr % SECONDS_PER_DAY;
     HandleTimeText();
-    file << m_nextTime << '\n';
+    file << m_previousTime << '\n';
     file << m_score << '\n';
     file << m_currentPiece.GetType() << '\n';
     file << m_nextPiece.GetType() << '\n';
