@@ -17,10 +17,7 @@ StateMachine::StateMachine() :m_window {sf::VideoMode(System::WIDTH, System::HEI
 
 StateMachine::~StateMachine()
 {
-    for(auto* state : m_states)
-    {
-        delete state;
-    }
+
 }
 
 
@@ -28,9 +25,12 @@ void StateMachine::UpdateState()
 {
     //Only updates one state at any given point: the current state selected. Rendering and
     //Event handling are each handled separately by each state, not in the state machine.
-    if(p_currentState != nullptr)
+    while(m_window.isOpen())
     {
-        p_currentState->Update();
+        if(p_currentState != nullptr)
+        {
+            p_currentState->Update();
+        }
     }
 }
 
@@ -45,10 +45,8 @@ void StateMachine::Run()
     GlobalResources::GameMusic.play();
 
 
-    while(m_window.isOpen())
-    {
-        UpdateState();
-    }
+
+    UpdateState();
 }
 
 void StateMachine::AddState()
@@ -62,9 +60,18 @@ void StateMachine::AddState()
     m_states.emplace_back(dailyGame);
 }
 
+void StateMachine::ResetGame()
+{
+    m_states[GAME] = std::make_shared<Game>(*this, m_window);
+    SwitchState(MENU);
+    UpdateState();
+}
+
 void StateMachine::SwitchState(StateName state)
 {
+
     //get a pointer to the selected state and set it as the current state
     std::cout<<"Switching to state " << state << "\n";
     p_currentState = m_states[state];
+    m_currentStateType = state;
 }

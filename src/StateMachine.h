@@ -4,6 +4,8 @@
 
 #ifndef STATEMACHINE_HPP
 #define STATEMACHINE_HPP
+#include <memory>
+
 #include "State.h"
 #include "Game.h"
 #include <vector>
@@ -22,8 +24,8 @@ enum StateName : int{
 
 class StateMachine {
 
-    State* p_currentState;
-    std::vector<State*> m_states;
+    std::shared_ptr<State> p_currentState;
+    std::vector<std::shared_ptr<State>> m_states;
     sf::RenderWindow m_window;
     sf::Clock m_clock;
     void UpdateState();
@@ -37,7 +39,9 @@ public:
     void Run();
     void SwitchState(StateName state);
     void AddState();
+    void ResetGame();
 
+    int m_currentStateType;
 
 
 };
