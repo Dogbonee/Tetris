@@ -66,6 +66,10 @@ protected:
     sf::Text m_nextLabel;
     sf::Text m_holdLabel;
 
+
+    sf::Sound m_placeSound;
+    sf::Sound m_clearSound;
+
     void setScore();
 
 

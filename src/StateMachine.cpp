@@ -39,6 +39,12 @@ void StateMachine::Run()
 {
     std::cout<<"Game setup successful. Running...\n";
     m_window.setFramerateLimit(60);
+
+    GlobalResources::GameMusic.setLoop(true);
+    GlobalResources::GameMusic.setVolume(30);
+    GlobalResources::GameMusic.play();
+
+
     while(m_window.isOpen())
     {
         UpdateState();
