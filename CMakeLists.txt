@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.21)
 project(Tetris)
 
-set(SFML_DIR)
+set(SFML_DIR C:/StudentFiles/Student/SFML-2.6.1/lib/cmake/SFML)
 set(CMAKE_CXX_STANDARD 17)
 set(SOURCE_FILES src/main.cpp
         src/Game.cpp

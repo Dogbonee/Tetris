@@ -39,7 +39,7 @@ Game::Game(StateMachine &sm, sf::RenderWindow &window) : State(sm, window),
     m_fpsCounter.setCharacterSize(30);
 
     m_placeSound.setBuffer(GlobalResources::TickBuffer);
-    m_placeSound.setVolume(70);
+    m_placeSound.setVolume(40);
     m_clearSound.setBuffer(GlobalResources::ClearBuffer);
 
 

@@ -41,7 +41,7 @@ void StateMachine::Run()
     m_window.setFramerateLimit(60);
 
     GlobalResources::GameMusic.setLoop(true);
-    GlobalResources::GameMusic.setVolume(30);
+    GlobalResources::GameMusic.setVolume(15);
     GlobalResources::GameMusic.play();
 
 
