@@ -49,6 +49,7 @@ Game::Game(StateMachine &sm, sf::RenderWindow &window) : State(sm, window),
     m_menuButton.setTextSize(45);
     m_menuButton.callback = [this]() {
         p_stateMachine->ResetGame();
+        p_stateMachine->SwitchState(MENU);
     };
 
 

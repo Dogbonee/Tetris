@@ -26,9 +26,12 @@ class StateMachine {
 
     std::shared_ptr<State> p_currentState;
     std::vector<std::shared_ptr<State>> m_states;
+
     sf::RenderWindow m_window;
     sf::Clock m_clock;
     void UpdateState();
+
+    bool m_shouldGameReset;
 
 
 

@@ -10,7 +10,8 @@
 #include "Menu.h"
 
 
-StateMachine::StateMachine() :m_window {sf::VideoMode(System::WIDTH, System::HEIGHT), "Tetris", sf::Style::Close}
+StateMachine::StateMachine() :m_window {sf::VideoMode(System::WIDTH, System::HEIGHT), "Tetris", sf::Style::Close},
+m_shouldGameReset(false)
 {
     std::cout<<"Starting state machine\n";
 }
@@ -29,6 +30,12 @@ void StateMachine::UpdateState()
     {
         if(p_currentState != nullptr)
         {
+            if(m_shouldGameReset)
+            {
+                m_states[GAME].reset();
+                m_states[GAME] = std::make_shared<Game>(*this, m_window);
+                m_shouldGameReset = false;
+            }
             p_currentState->Update();
         }
     }
@@ -62,9 +69,7 @@ void StateMachine::AddState()
 
 void StateMachine::ResetGame()
 {
-    m_states[GAME] = std::make_shared<Game>(*this, m_window);
-    SwitchState(MENU);
-    UpdateState();
+    m_shouldGameReset = true;
 }
 
 void StateMachine::SwitchState(StateName state)
