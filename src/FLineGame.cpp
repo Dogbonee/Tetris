@@ -14,11 +14,11 @@ FLineGame::FLineGame(StateMachine &sm, sf::RenderWindow &window) : Game(sm, wind
     m_timeText.setOrigin(System::CenterTextOrigin(m_timeText));
 
     m_lineCountText.setFont(GlobalResources::BlockFont);
+
     m_lineCountText.setCharacterSize(40);
     m_lineCountText.setString("Lines: 0");
     m_lineCountText.setPosition(120, 380);
     m_lineCountText.setOrigin(System::CenterTextOrigin(m_lineCountText));
-
 }
 
 void FLineGame::Update()
