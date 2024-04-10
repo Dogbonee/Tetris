@@ -10,7 +10,7 @@ BlitzGame::BlitzGame(StateMachine &sm, sf::RenderWindow &window) : Game(sm, wind
     m_timeText.setCharacterSize(60);
     m_timeText.setString("0:00:00");
 
-    m_timeText.setPosition(120, 320);
+    m_timeText.setPosition(120, 300);
     m_timeText.setOrigin(System::CenterTextOrigin(m_timeText));
 
     m_elapsedTime = 120;
