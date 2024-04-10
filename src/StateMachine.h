@@ -8,6 +8,10 @@
 
 #include "State.h"
 #include "Game.h"
+#include "BlitzGame.h"
+#include "DailyGame.h"
+#include "FLineGame.h"
+#include "Menu.h"
 #include <vector>
 #include <SFML/Audio.hpp>
 
@@ -16,7 +20,9 @@ enum StateName : int{
 
     MENU = 0,
     GAME,
-    DAILY_GAME
+    DAILY_GAME,
+    FLINE_GAME,
+    BLITZ_GAME
 
 };
 

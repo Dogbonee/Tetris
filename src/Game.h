@@ -29,6 +29,7 @@ protected:
     void Update() override;
 
     sf::Clock m_clock;
+    float m_dt;
     float m_tickLength;
     float m_defaultTickLength;
     float m_speedTickLength;
@@ -61,6 +62,7 @@ protected:
 
     bool m_isGameOver;
 
+    unsigned int m_clearedLineCount;
     unsigned long m_score;
 
     //UI
@@ -77,17 +79,14 @@ protected:
 
     void setScore();
 
-
-
-
     //Game functions
     void SpawnPiece(PieceType type);
 
     virtual void ManageGameClock();
     virtual bool Tick();
+    virtual void HandleScoring();
     void MovePieceComponents(MovementOption direction);
     void RotatePieceComponents(RotationOption direction);
-    void HandleScoring();
     void HandleGhostPiece();
     void ResetGhostPiece();
     void ManageGhostPiece();
