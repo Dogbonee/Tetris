@@ -178,7 +178,7 @@ void DailyGame::Update()
 
 void DailyGame::Render()
 {
-    p_window->clear();
+
     p_window->draw(m_fpsCounter);
     if(m_isGameOver)
     {
@@ -210,7 +210,7 @@ void DailyGame::Render()
     }
     p_window->draw(m_menuButton);
 
-    p_window->display();
+
 }
 
 void DailyGame::DropPiece()

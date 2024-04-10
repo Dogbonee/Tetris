@@ -17,9 +17,13 @@ class Menu : public State{
     std::vector<Button> m_buttons;
     Button m_standardButton;
     Button m_dailyButton;
+    Button m_fLineButton;
+    Button m_blitzButton;
 
     void StartStandardGame();
     void StartDailyGame();
+    void StartFourtyLineGame();
+    void StartBlitzGame();
 
 protected:
 

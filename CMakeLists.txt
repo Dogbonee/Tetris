@@ -26,6 +26,10 @@ set(SOURCE_FILES src/main.cpp
         src/GameOver.h
         src/DailyGame.cpp
         src/DailyGame.h
+        src/FLineGame.cpp
+        src/FLineGame.h
+        src/BlitzGame.cpp
+        src/BlitzGame.h
 )
 set(SFML_STATIC_LIBRARIES true)
 

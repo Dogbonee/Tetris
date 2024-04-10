@@ -16,7 +16,7 @@ protected:
     StateMachine* p_stateMachine;
     sf::RenderWindow* p_window;
 
-    virtual void Render() = 0;
+
 
     virtual void HandleEvents();
     virtual void HandleKeyboardInput(sf::Keyboard::Key keyCode) = 0;
@@ -26,6 +26,7 @@ public:
 
     State(StateMachine& sm, sf::RenderWindow& window);
     virtual void Update() = 0;
+    virtual void Render() = 0;
 };
 
 

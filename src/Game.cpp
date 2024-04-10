@@ -18,7 +18,8 @@ Game::Game(StateMachine &sm, sf::RenderWindow &window) : State(sm, window),
                                                          m_ghostPiece(m_currentPiece),
                                                          m_nextPiecePosition(650, 100), m_holdPiecePosition(650, 250),
                                                          m_hasHeld(false), m_hasHeldThisTurn(false),
-                                                         m_isGameOver(false), m_score(0), m_menuButton(sf::Vector2f(150,75), "Menu")
+                                                         m_isGameOver(false), m_score(0), m_menuButton(sf::Vector2f(150,75), "Menu"),
+                                                         m_clearedLineCount(0), m_dt(0)
 {
     m_scoreLabel.setFont(GlobalResources::BlockFont);
     m_scoreLabel.setCharacterSize(60);
@@ -66,13 +67,12 @@ Game::Game(StateMachine &sm, sf::RenderWindow &window) : State(sm, window),
 
 void Game::Render()
 {
-    p_window->clear();
+
     p_window->draw(m_fpsCounter);
     p_window->draw(m_menuButton);
     if(m_isGameOver)
     {
         p_window->draw(m_gameOverScreen);
-        p_window->display();
         return;
     }
     p_window->draw(m_board);
@@ -92,9 +92,6 @@ void Game::Render()
         p_window->draw(m_holdPiece);
     }
 
-
-    //DrawPieces(m_window);
-    p_window->display();
 }
 
 void Game::HandleEvents()
@@ -206,14 +203,15 @@ void Game::SpawnPiece(PieceType type)
 
 void Game::ManageGameClock()
 {
+    m_dt = m_clock.restart().asSeconds();
     static float tickTimeRemaining = m_tickLength;
-    tickTimeRemaining -= m_clock.restart().asSeconds();
+    tickTimeRemaining -= m_dt;
 
     if(tickTimeRemaining <= 0 || tickTimeRemaining > m_tickLength)
     {
         Tick();
         tickTimeRemaining = m_tickLength;
-        m_fpsCounter.setString("FPS: " + std::to_string(static_cast<int>(round(1/m_clock.restart().asSeconds()))));
+        m_fpsCounter.setString("FPS: " + std::to_string(static_cast<int>(round(1/m_dt))));
     }
 }
 
@@ -264,6 +262,7 @@ void Game::HandleScoring()
 {
     std::vector<int> completedLines = m_board.CheckLines();
     if(completedLines.size() == 0)return;
+    m_clearedLineCount += completedLines.size();
     m_clearSound.play();
     int earnedScore = 0;
     switch(completedLines.size())

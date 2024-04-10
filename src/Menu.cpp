@@ -7,8 +7,9 @@
 #include <iostream>
 
 Menu::Menu(StateMachine &sm, sf::RenderWindow &window) : State(sm, window),
-                                                         m_standardButton(sf::Vector2f(300, 175), "Play Standard"),
-                                                         m_dailyButton(sf::Vector2f(300, 175), "Play Daily")
+                                                         m_standardButton(sf::Vector2f(300, 125), "Play Standard"),
+                                                         m_dailyButton(sf::Vector2f(300, 125), "Play Daily"),
+m_fLineButton(sf::Vector2f(300,125), "Play 40 Lines"), m_blitzButton(sf::Vector2f(300,125), "Play Blitz")
 {
     m_titleLabel.setFont(GlobalResources::BlockFont);
     m_titleLabel.setCharacterSize(140);
@@ -23,11 +24,21 @@ Menu::Menu(StateMachine &sm, sf::RenderWindow &window) : State(sm, window),
     m_dailyButton.setPosition(System::WIDTH * 3/4, System::HEIGHT / 2);
     m_dailyButton.setColor(sf::Color::Green);
 
+    m_fLineButton.setPosition(System::WIDTH/4, System::HEIGHT * 3/4);
+    m_fLineButton.setColor(sf::Color::Blue);
+
+    m_blitzButton.setPosition(System::WIDTH * 3/4, System::HEIGHT * 3/4);
+    m_blitzButton.setColor(sf::Color::Yellow);
+
     m_standardButton.callback = [this] { StartStandardGame(); };
     m_dailyButton.callback = [this] { StartDailyGame(); };
+    m_fLineButton.callback = [this] { StartFourtyLineGame(); };
+    m_blitzButton.callback = [this] { StartBlitzGame(); };
 
     m_buttons.push_back(m_standardButton);
     m_buttons.push_back(m_dailyButton);
+    m_buttons.push_back(m_fLineButton);
+    m_buttons.push_back(m_blitzButton);
 }
 
 void Menu::StartStandardGame()
@@ -40,12 +51,22 @@ void Menu::StartDailyGame()
     p_stateMachine->SwitchState(DAILY_GAME);
 }
 
+void Menu::StartFourtyLineGame()
+{
+    p_stateMachine->SwitchState(FLINE_GAME);
+}
+
+void Menu::StartBlitzGame()
+{
+    p_stateMachine->SwitchState(BLITZ_GAME);
+}
+
 void Menu::Render()
 {
-    p_window->clear();
+
     p_window->draw(m_titleLabel);
     for(auto& button : m_buttons) p_window->draw(button);
-    p_window->display();
+
 }
 
 void Menu::HandleKeyboardInput(sf::Keyboard::Key keyCode)
