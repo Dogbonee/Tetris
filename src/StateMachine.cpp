@@ -40,7 +40,8 @@ void StateMachine::UpdateState()
                 m_states[BLITZ_GAME] = std::make_shared<BlitzGame>(*this, m_window);
                 m_shouldGameReset = false;
             }
-            p_currentState->Update();
+            m_dt = m_clock.restart().asSeconds();
+            p_currentState->Update(m_dt);
             m_window.clear();
             p_currentState->Render();
             m_window.display();

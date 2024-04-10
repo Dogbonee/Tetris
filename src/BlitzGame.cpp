@@ -16,10 +16,10 @@ BlitzGame::BlitzGame(StateMachine &sm, sf::RenderWindow &window) : Game(sm, wind
     m_elapsedTime = 120;
 }
 
-void BlitzGame::Update()
+void BlitzGame::Update(const float& dt)
 {
-    Game::Update();
-    UpdateElapsedTime();
+    Game::Update(dt);
+    UpdateElapsedTime(dt);
     if(m_elapsedTime <= 0)
     {
         m_gameOverScreen.GameoverText.setString("Game End");
@@ -39,9 +39,9 @@ void BlitzGame::Render()
     }
 }
 
-void BlitzGame::UpdateElapsedTime()
+void BlitzGame::UpdateElapsedTime(const float& dt)
 {
-    m_elapsedTime -= m_dt;
+    m_elapsedTime -= dt;
     int minutes = static_cast<int>(m_elapsedTime) / 60;
     int seconds = static_cast<int>(m_elapsedTime) % 60;
     int millis = static_cast<int>((m_elapsedTime - (static_cast<float>(seconds) + minutes * 60)) * 100.f);

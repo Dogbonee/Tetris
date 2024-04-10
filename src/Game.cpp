@@ -19,7 +19,7 @@ Game::Game(StateMachine &sm, sf::RenderWindow &window) : State(sm, window),
                                                          m_nextPiecePosition(650, 100), m_holdPiecePosition(650, 250),
                                                          m_hasHeld(false), m_hasHeldThisTurn(false),
                                                          m_isGameOver(false), m_score(0), m_menuButton(sf::Vector2f(150,75), "Menu"),
-                                                         m_clearedLineCount(0), m_dt(0)
+                                                         m_clearedLineCount(0)
 {
     m_scoreLabel.setFont(GlobalResources::BlockFont);
     m_scoreLabel.setCharacterSize(60);
@@ -153,20 +153,16 @@ void Game::HandleKeyboardInput(sf::Keyboard::Key keyCode)
     }
 }
 
-void Game::Update()
+void Game::Update(const float& dt)
 {
     //should handle in other function in future
     //If the down arrow is pressed, the tick length should be way less
     m_tickLength = sf::Keyboard::isKeyPressed(sf::Keyboard::Down) ? m_speedTickLength : m_defaultTickLength;
     HandleEvents();
-    ManageGameClock();
+    ManageGameClock(dt);
     Render();
 }
 
-void Game::Run()
-{
-    Update();
-}
 
 void Game::setScore()
 {
@@ -201,17 +197,16 @@ void Game::SpawnPiece(PieceType type)
 }
 
 
-void Game::ManageGameClock()
+void Game::ManageGameClock(const float& dt)
 {
-    m_dt = m_clock.restart().asSeconds();
     static float tickTimeRemaining = m_tickLength;
-    tickTimeRemaining -= m_dt;
+    tickTimeRemaining -= dt;
 
     if(tickTimeRemaining <= 0 || tickTimeRemaining > m_tickLength)
     {
         Tick();
         tickTimeRemaining = m_tickLength;
-        m_fpsCounter.setString("FPS: " + std::to_string(static_cast<int>(round(1/m_dt))));
+        m_fpsCounter.setString("FPS: " + std::to_string(static_cast<int>(round(1/dt))));
     }
 }
 

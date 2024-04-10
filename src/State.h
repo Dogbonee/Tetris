@@ -25,7 +25,7 @@ public:
     virtual ~State() = default;
 
     State(StateMachine& sm, sf::RenderWindow& window);
-    virtual void Update() = 0;
+    virtual void Update(const float& dt) = 0;
     virtual void Render() = 0;
 };
 

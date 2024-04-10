@@ -36,7 +36,7 @@ protected:
 public:
     Menu(StateMachine& sm, sf::RenderWindow& window);
 
-    void Update() override;
+    void Update(const float& dt) override;
 
 
 

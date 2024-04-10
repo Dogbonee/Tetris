@@ -29,7 +29,7 @@ class DailyGame : public Game{
     int hexToInt(char input);
 
     //bool Tick() override;
-    void ManageGameClock() override;
+    void ManageGameClock(const float& dt) override;
     void Render() override;
     void DropPiece() override;
     void ConfirmPiece();
@@ -39,7 +39,7 @@ class DailyGame : public Game{
 
 public:
     DailyGame(StateMachine &sm, sf::RenderWindow &window);
-    void Update() override;
+    void Update(const float& dt) override;
 
 
 

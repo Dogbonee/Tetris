@@ -21,10 +21,10 @@ FLineGame::FLineGame(StateMachine &sm, sf::RenderWindow &window) : Game(sm, wind
     m_lineCountText.setOrigin(System::CenterTextOrigin(m_lineCountText));
 }
 
-void FLineGame::Update()
+void FLineGame::Update(const float& dt)
 {
-    Game::Update();
-    UpdateElapsedTime();
+    Game::Update(dt);
+    UpdateElapsedTime(dt);
 }
 
 void FLineGame::Render()
@@ -52,9 +52,9 @@ void FLineGame::HandleScoring()
     m_lineCountText.setOrigin(System::CenterTextOrigin(m_lineCountText));
 }
 
-void FLineGame::UpdateElapsedTime()
+void FLineGame::UpdateElapsedTime(const float& dt)
 {
-    m_elapsedTime += m_dt;
+    m_elapsedTime += dt;
     int minutes = static_cast<int>(m_elapsedTime) / 60;
     int seconds = static_cast<int>(m_elapsedTime) % 60;
     int millis = static_cast<int>((m_elapsedTime - (static_cast<float>(seconds) + minutes * 60)) * 100.f);

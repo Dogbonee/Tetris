@@ -16,9 +16,9 @@ class BlitzGame : public Game{
 public:
     BlitzGame(StateMachine &sm, sf::RenderWindow &window);
 
-    void Update() override;
+    void Update(const float& dt) override;
     void Render() override;
-    void UpdateElapsedTime();
+    void UpdateElapsedTime(const float& dt);
 };
 
 

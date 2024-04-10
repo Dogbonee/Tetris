@@ -18,11 +18,11 @@ class FLineGame : public Game{
 
 public:
     FLineGame(StateMachine &sm, sf::RenderWindow &window);
-    void Update() override;
+    void Update(const float& dt) override;
     void Render() override;
     void HandleScoring() override;
 
-    void UpdateElapsedTime();
+    void UpdateElapsedTime(const float& dt);
 
 };
 

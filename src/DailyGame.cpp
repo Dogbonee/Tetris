@@ -154,7 +154,7 @@ int DailyGame::hexToInt(char input)
     return input - 55;
 }
 
-void DailyGame::ManageGameClock()
+void DailyGame::ManageGameClock(const float& dt)
 {
     static float tickTimeRemaining = m_tickLength;
     tickTimeRemaining -= m_clock.restart().asSeconds();
@@ -170,9 +170,9 @@ void DailyGame::ManageGameClock()
 
 
 
-void DailyGame::Update()
+void DailyGame::Update(const float& dt)
 {
-   Game::Update();
+   Game::Update(dt);
 
 }
 

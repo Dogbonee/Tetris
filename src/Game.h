@@ -26,10 +26,9 @@ protected:
     void Render() override;
     void HandleEvents() override;
     void HandleKeyboardInput(sf::Keyboard::Key keyCode) override;
-    void Update() override;
+    void Update(const float& dt) override;
 
     sf::Clock m_clock;
-    float m_dt;
     float m_tickLength;
     float m_defaultTickLength;
     float m_speedTickLength;
@@ -40,7 +39,6 @@ protected:
 
 public:
     Game(StateMachine &sm, sf::RenderWindow &window);
-    void Run();
 
 
 protected:
@@ -82,7 +80,7 @@ protected:
     //Game functions
     void SpawnPiece(PieceType type);
 
-    virtual void ManageGameClock();
+    virtual void ManageGameClock(const float& dt);
     virtual bool Tick();
     virtual void HandleScoring();
     void MovePieceComponents(MovementOption direction);

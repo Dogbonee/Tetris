@@ -35,6 +35,8 @@ class StateMachine {
 
     sf::RenderWindow m_window;
     sf::Clock m_clock;
+    float m_dt;
+
     void UpdateState();
 
     bool m_shouldGameReset;

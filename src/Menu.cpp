@@ -101,7 +101,7 @@ void Menu::HandleEvents()
     }
 }
 
-void Menu::Update()
+void Menu::Update(const float& dt)
 {
     HandleEvents();
     Render();
